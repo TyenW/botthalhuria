@@ -1,0 +1,11 @@
+target/
+data/
+backups/
+templates/
+.env
+.git/
+.github/
+.vscode/
+.idea/
+*.db
+*.log

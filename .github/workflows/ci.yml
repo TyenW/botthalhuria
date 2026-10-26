@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      # Inclui TemplateValidationTest: um server-template.json quebrado reprova o build
+      - name: Testes e validação do template
+        run: mvn -B clean verify
+
+      - name: Template embutido igual ao da raiz
+        run: diff server-template.json src/main/resources/default-server-template.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: botthalhuria-jar
+          path: target/botthalhuria-1.0.0.jar

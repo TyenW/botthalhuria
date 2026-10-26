@@ -1,0 +1,618 @@
+{
+  "$schema": "./server-template.schema.json",
+  "templateName": "Thalhuria • Reino da Resenha",
+  "version": "4.2.0",
+
+  "branding": {
+    "name": "Thalhuria",
+    "tagline": "Onde a resenha encontra o jogo.",
+    "colorHex": "#8B5CF6",
+    "footer": "Thalhuria ✦ o reino da resenha",
+    "iconUrl": null,
+    "bannerUrl": null,
+    "activity": "o Reino de Thalhuria ✦"
+  },
+
+  "onboarding": {
+    "enabled": true,
+    "autoRoleKey": "ROLE_VISITOR",
+    "botRoleKey": "ROLE_BOT",
+    "verifiedRoleKey": "ROLE_MEMBER",
+    "removeAutoRoleOnVerify": true,
+    "welcomeChannelKey": "CHAN_WELCOME",
+    "rulesChannelKey": "CHAN_REGRAS",
+    "communityUpdatesChannelKey": "CHAN_MOD_CHAT",
+    "pingOnWelcome": true,
+    "welcomeTitle": "✦ Os portões se abrem para um novo viajante",
+    "welcomeMessage": "Salve, {user}! Você é o **{count}º habitante** de Thalhuria. 🏰\n\n**🗺️ Seu caminho pelo reino**\n> 📜 Leia as leis em {channel:CHAN_REGRAS}\n> 🗝️ Atravesse os portões em {channel:CHAN_VERIFY}\n> 🎭 Depois, monte sua identidade e escolha seus cargos\n\n*A taverna está cheia e a resenha não para — chega mais!*",
+    "welcomeImageUrl": null,
+    "verifiedMessage": "🗝️ **Os portões se abriram, {username}!** Agora você é um(a) {role:ROLE_MEMBER} de Thalhuria.\n\n**Próximos passos:**\n> 🎭 Escolha seus cargos em {channel:CHAN_SELF_ROLES}\n> 🪙 Resgate seus primeiros Thalers com `/daily`\n> 💬 Diga um oi em {channel:CHAN_CHAT}\n> ➕ Crie sua própria call em {channel:CHAN_VOICE_CREATE}",
+    "dmWelcome": true,
+    "dmTitle": "✦ Bem-vindo(a) a Thalhuria, {username}!",
+    "dmMessage": "Que bom ter você no reino! Aqui vai um guia rápido para não se perder:\n\n**1. Leia as leis** — são poucas e curtas, prometo. 📜\n**2. Atravesse os portões** — um clique no botão de verificação libera todo o servidor. 🗝️\n**3. Monte sua identidade** — escolha interesses e notificações no menu de cargos. 🎭\n\n**O que te espera do lado de dentro:**\n⚔️ Níveis e títulos que sobem conforme você conversa e joga\n🪙 Thalers para gastar em cores de nome no `/loja`\n🔊 Salas de voz que você mesmo cria e controla\n🎉 Eventos, torneios e noites de jogo\n\nPrecisando de ajuda, é só abrir um ticket lá dentro. Nos vemos na taverna! 🍻",
+    "dmButtonChannelKey": "CHAN_VERIFY"
+  },
+
+  "welcomeCard": {
+    "enabled": true,
+    "backgroundColorHex": "#1E1B2E",
+    "accentColorHex": null,
+    "backgroundImageUrl": null,
+    "title": "Bem-vindo(a) ao reino de Thalhuria",
+    "subtitle": "Habitante nº {count}"
+  },
+
+  "tickets": {
+    "enabled": true,
+    "categoryKey": "CAT_INDIVIDUAL_ROOMS",
+    "staffRoleKeys": ["ROLE_MODERATOR", "ROLE_SUPPORT"],
+    "channelPrefix": "🎫・",
+    "openTitle": "🎫 Ticket aberto",
+    "openMessage": "Olá {user}! Obrigado por abrir um ticket.\n\nConte com detalhes o que aconteceu (prints ajudam muito). Alguém da staff vai responder aqui assim que possível.\n\nQuando o assunto estiver resolvido, clique em **Fechar ticket**.",
+    "closeDelaySeconds": 5,
+    "transcripts": true,
+    "dmTranscript": true,
+    "types": [
+      {
+        "key": "suporte",
+        "label": "Suporte",
+        "emoji": "🧭",
+        "description": "Dúvidas, problemas com cargos ou com o bot",
+        "channelPrefix": "🧭・",
+        "staffRoleKeys": ["ROLE_SUPPORT", "ROLE_MODERATOR"],
+        "openMessage": "Olá {user}! Conte sua dúvida ou problema com detalhes. Um 🧭 Guia vai te ajudar em breve."
+      },
+      {
+        "key": "denuncia",
+        "label": "Denúncia",
+        "emoji": "🚨",
+        "description": "Alguém quebrou as regras? Conte aqui, em sigilo",
+        "channelPrefix": "🚨・",
+        "staffRoleKeys": ["ROLE_MODERATOR"],
+        "openMessage": "Olá {user}. Sua denúncia é **sigilosa** e só a moderação vê este canal.\n\nInforme: **quem**, **onde** (canal), **quando** e, se possível, **prints**."
+      },
+      {
+        "key": "parceria",
+        "label": "Parceria",
+        "emoji": "🤝",
+        "description": "Proposta de parceria com outro servidor ou criador",
+        "channelPrefix": "🤝・",
+        "staffRoleKeys": ["ROLE_ADMIN"],
+        "openMessage": "Olá {user}! Que bom que quer se aliar a Thalhuria.\n\nEnvie: link do seu servidor/canal, número de membros e o que você propõe."
+      }
+    ]
+  },
+
+  "leveling": {
+    "enabled": true,
+    "xpMin": 15,
+    "xpMax": 25,
+    "cooldownSeconds": 60,
+    "xpPerVoiceMinute": 10,
+    "announceChannelKey": "CHAN_LEVELUPS",
+    "levelUpMessage": "{user} ergueu a espada e alcançou o **nível {level}**! O reino reconhece sua bravura. ⚔️",
+    "stackRewards": false,
+    "rewards": [
+      { "level": 5, "roleKey": "ROLE_LVL_5" },
+      { "level": 15, "roleKey": "ROLE_LVL_15" },
+      { "level": 30, "roleKey": "ROLE_LVL_30" },
+      { "level": 50, "roleKey": "ROLE_LVL_50" }
+    ],
+    "ignoredChannelKeys": ["CHAN_COMMANDS"]
+  },
+
+  "economy": {
+    "enabled": true,
+    "currencyName": "Thalers",
+    "currencyEmoji": "🪙",
+    "coinsPerMessage": 2,
+    "coinsPerVoiceMinute": 1,
+    "dailyAmount": 150,
+    "dailyStreakBonus": 25,
+    "maxStreakBonusDays": 7,
+    "shop": [
+      { "key": "cor_rubi", "name": "Cor Rubi", "emoji": "🌹", "description": "Nome em vermelho rubi", "roleKey": "ROLE_COLOR_RUBY", "price": 1500, "group": "cor" },
+      { "key": "cor_safira", "name": "Cor Safira", "emoji": "🌊", "description": "Nome em azul safira", "roleKey": "ROLE_COLOR_SAPPHIRE", "price": 1500, "group": "cor" },
+      { "key": "cor_esmeralda", "name": "Cor Esmeralda", "emoji": "🌿", "description": "Nome em verde esmeralda", "roleKey": "ROLE_COLOR_EMERALD", "price": 1500, "group": "cor" },
+      { "key": "cor_sombra", "name": "Cor Sombra", "emoji": "🌑", "description": "Nome em cinza sombrio", "roleKey": "ROLE_COLOR_SHADOW", "price": 1500, "group": "cor" },
+      { "key": "cor_ouro", "name": "Cor Ouro Real", "emoji": "🌟", "description": "O dourado dos nobres", "roleKey": "ROLE_COLOR_GOLD", "price": 5000, "group": "cor" },
+      { "key": "titulo_bardo", "name": "Título: Bardo Errante", "emoji": "🎻", "description": "Um título raro para exibir no perfil", "roleKey": "ROLE_TITLE_BARD", "price": 8000 }
+    ]
+  },
+
+  "moderation": {
+    "modLogChannelKey": "CHAN_MODLOGS",
+    "logMessageEdits": true,
+    "logMessageDeletes": true,
+    "logVoice": true,
+    "warningExpiryDays": 30,
+    "warnThresholds": [
+      { "warnings": 3, "action": "TIMEOUT", "durationMinutes": 60 },
+      { "warnings": 5, "action": "TIMEOUT", "durationMinutes": 1440 },
+      { "warnings": 7, "action": "BAN", "durationMinutes": 0 }
+    ],
+    "automod": {
+      "enabled": true,
+      "blockedWords": ["*nitro gratis*", "*nitro grátis*", "*free nitro*", "*steam gift*", "*discord.gift*"],
+      "blockInvites": true,
+      "mentionLimit": 6,
+      "antiSpam": true,
+      "timeoutMinutes": 10,
+      "blockMessage": "🚫 Sua mensagem foi bloqueada pelas leis de Thalhuria.",
+      "exemptRoleKeys": ["ROLE_OWNER", "ROLE_ADMIN", "ROLE_MODERATOR", "ROLE_PARTNER"]
+    }
+  },
+
+  "events": {
+    "enabled": true,
+    "announceChannelKey": "CHAN_EVENTS",
+    "pingRoleKey": "ROLE_PING_EVENTS",
+    "reminderMinutes": 15,
+    "timezone": "America/Sao_Paulo"
+  },
+
+  "invites": {
+    "enabled": true,
+    "showInWelcome": true,
+    "coinsPerInvite": 250,
+    "rewardOnlyVerified": true,
+    "minAccountAgeDays": 7,
+    "removeTierOnLeave": true,
+    "tiers": [
+      { "invites": 3, "roleKey": "ROLE_RECRUITER_1" },
+      { "invites": 10, "roleKey": "ROLE_RECRUITER_2" },
+      { "invites": 25, "roleKey": "ROLE_RECRUITER_3" }
+    ]
+  },
+
+  "messages": {},
+
+  "roles": [
+    {
+      "key": "ROLE_OWNER",
+      "name": "👑 Soberano de Thalhuria",
+      "colorHex": "#FFD166",
+      "hoist": true,
+      "mentionable": false,
+      "ownerRole": true,
+      "permissions": ["ADMINISTRATOR"]
+    },
+    {
+      "key": "ROLE_ADMIN",
+      "name": "⚜️ Alto Conselho",
+      "colorHex": "#F59E0B",
+      "hoist": true,
+      "mentionable": true,
+      "adminRole": true,
+      "permissions": ["ADMINISTRATOR"]
+    },
+    {
+      "key": "ROLE_MODERATOR",
+      "name": "🛡️ Guardião Real",
+      "colorHex": "#EF4444",
+      "hoist": true,
+      "mentionable": true,
+      "permissions": [
+        "KICK_MEMBERS", "BAN_MEMBERS", "MODERATE_MEMBERS", "MESSAGE_MANAGE", "MANAGE_THREADS",
+        "NICKNAME_MANAGE", "VOICE_MUTE_OTHERS", "VOICE_DEAF_OTHERS", "VOICE_MOVE_OTHERS",
+        "VIEW_AUDIT_LOGS", "MANAGE_EVENTS", "CREATE_SCHEDULED_EVENTS"
+      ]
+    },
+    {
+      "key": "ROLE_SUPPORT",
+      "name": "🧭 Guia do Reino",
+      "colorHex": "#22C55E",
+      "hoist": true,
+      "mentionable": true,
+      "permissions": ["MESSAGE_MANAGE", "MANAGE_THREADS", "VOICE_MOVE_OTHERS", "MODERATE_MEMBERS"]
+    },
+    {
+      "key": "ROLE_EVENTS",
+      "name": "🎪 Arauto dos Eventos",
+      "colorHex": "#EC4899",
+      "hoist": true,
+      "mentionable": true,
+      "permissions": ["MANAGE_EVENTS", "CREATE_SCHEDULED_EVENTS", "VOICE_MUTE_OTHERS", "VOICE_MOVE_OTHERS", "PRIORITY_SPEAKER"]
+    },
+    {
+      "key": "ROLE_PARTNER",
+      "name": "🤝 Embaixador",
+      "colorHex": "#14B8A6",
+      "hoist": true,
+      "mentionable": false,
+      "permissions": []
+    },
+    {
+      "key": "ROLE_VIP",
+      "name": "💎 Mecenas",
+      "colorHex": "#F472B6",
+      "hoist": true,
+      "mentionable": false,
+      "permissions": ["MESSAGE_EXT_EMOJI", "MESSAGE_EXT_STICKER", "NICKNAME_CHANGE"]
+    },
+    {
+      "key": "ROLE_BOT",
+      "name": "⚙️ Autômato",
+      "colorHex": "#6366F1",
+      "hoist": true,
+      "mentionable": false,
+      "permissions": [
+        "VIEW_CHANNEL", "MESSAGE_SEND", "MESSAGE_EMBED_LINKS", "MESSAGE_ATTACH_FILES",
+        "MESSAGE_HISTORY", "MESSAGE_ADD_REACTION", "USE_APPLICATION_COMMANDS",
+        "VOICE_CONNECT", "VOICE_SPEAK"
+      ]
+    },
+
+    { "key": "ROLE_COLOR_GOLD", "name": "🌟 Ouro Real", "colorHex": "#FACC15", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_COLOR_RUBY", "name": "🌹 Rubi", "colorHex": "#E11D48", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_COLOR_SAPPHIRE", "name": "🌊 Safira", "colorHex": "#2563EB", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_COLOR_EMERALD", "name": "🌿 Esmeralda", "colorHex": "#059669", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_COLOR_SHADOW", "name": "🌑 Sombra", "colorHex": "#475569", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_TITLE_BARD", "name": "🎻 Bardo Errante", "colorHex": "#C084FC", "hoist": false, "mentionable": false, "permissions": [] },
+
+    { "key": "ROLE_RECRUITER_3", "name": "🦅 Mestre dos Recrutas", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_RECRUITER_2", "name": "🏹 Batedor do Reino", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_RECRUITER_1", "name": "📯 Recrutador", "hoist": false, "mentionable": false, "permissions": [] },
+
+    { "key": "ROLE_LVL_50", "name": "🐉 Lorde Dragão", "colorHex": "#DC2626", "hoist": true, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_LVL_30", "name": "🏰 Barão", "colorHex": "#A855F7", "hoist": true, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_LVL_15", "name": "⚔️ Cavaleiro", "colorHex": "#3B82F6", "hoist": true, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_LVL_5", "name": "🗡️ Escudeiro", "colorHex": "#10B981", "hoist": true, "mentionable": false, "permissions": [] },
+
+    {
+      "key": "ROLE_MEMBER",
+      "name": "✨ Cidadão",
+      "colorHex": "#A78BFA",
+      "hoist": true,
+      "mentionable": false,
+      "memberRole": true,
+      "permissions": [
+        "VIEW_CHANNEL", "MESSAGE_SEND", "MESSAGE_SEND_IN_THREADS", "CREATE_PUBLIC_THREADS",
+        "MESSAGE_HISTORY", "MESSAGE_ADD_REACTION", "MESSAGE_EMBED_LINKS", "MESSAGE_ATTACH_FILES",
+        "MESSAGE_EXT_EMOJI", "MESSAGE_EXT_STICKER", "MESSAGE_SEND_POLLS", "MESSAGE_ATTACH_VOICE_MESSAGE",
+        "USE_APPLICATION_COMMANDS", "USE_EMBEDDED_ACTIVITIES", "NICKNAME_CHANGE",
+        "VOICE_CONNECT", "VOICE_SPEAK", "VOICE_STREAM", "VOICE_USE_VAD", "VOICE_USE_SOUNDBOARD"
+      ]
+    },
+    {
+      "key": "ROLE_VISITOR",
+      "name": "🌱 Viajante",
+      "colorHex": "#94A3B8",
+      "hoist": false,
+      "mentionable": false,
+      "permissions": ["VIEW_CHANNEL", "MESSAGE_HISTORY"]
+    },
+
+    { "key": "ROLE_PING_NEWS", "name": "🔔 Avisos", "emoji": "🔔", "description": "Seja marcado nos anúncios importantes", "selfAssignable": true, "hoist": false, "mentionable": true, "permissions": [] },
+    { "key": "ROLE_PING_EVENTS", "name": "🎉 Eventos", "emoji": "🎉", "description": "Torneios, sorteios e noites de jogo", "selfAssignable": true, "hoist": false, "mentionable": true, "permissions": [] },
+    { "key": "ROLE_INTEREST_GAMES", "name": "🎮 Gamer", "emoji": "🎮", "description": "Procura gente pra jogar? Esse é o seu cargo", "selfAssignable": true, "hoist": false, "mentionable": true, "permissions": [] },
+    { "key": "ROLE_INTEREST_ART", "name": "🎨 Artista", "emoji": "🎨", "description": "Desenho, edição, design e criação em geral", "selfAssignable": true, "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_INTEREST_MUSIC", "name": "🎵 Melômano", "emoji": "🎵", "description": "Para quem vive de fone no ouvido", "selfAssignable": true, "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_INTEREST_CINEMA", "name": "🎬 Cinéfilo", "emoji": "🎬", "description": "Filmes, séries e animes", "selfAssignable": true, "hoist": false, "mentionable": false, "permissions": [] }
+  ],
+
+  "categories": [
+    {
+      "key": "CAT_STATS",
+      "name": "━━ 📊 O REINO ━━",
+      "position": 1,
+      "permissionOverrides": [
+        { "target": "@everyone", "allow": ["VIEW_CHANNEL"], "deny": ["VOICE_CONNECT"] }
+      ],
+      "channels": [
+        { "key": "CHAN_STAT_MEMBERS", "name": "👥・Habitantes: {value}", "type": "VOICE", "counter": "MEMBERS" },
+        { "key": "CHAN_STAT_ONLINE", "name": "🟢・Online: {value}", "type": "VOICE", "counter": "ONLINE" },
+        { "key": "CHAN_STAT_BOOSTS", "name": "🚀・Boosts: {value}", "type": "VOICE", "counter": "BOOSTS" }
+      ]
+    },
+
+    {
+      "key": "CAT_INFO",
+      "name": "━━ 🏛️ PORTAL ━━",
+      "position": 2,
+      "permissionOverrides": [
+        {
+          "target": "@everyone",
+          "allow": ["VIEW_CHANNEL", "MESSAGE_HISTORY"],
+          "deny": ["MESSAGE_SEND", "MESSAGE_SEND_IN_THREADS", "CREATE_PUBLIC_THREADS", "CREATE_PRIVATE_THREADS", "MESSAGE_ADD_REACTION"]
+        }
+      ],
+      "channels": [
+        {
+          "key": "CHAN_WELCOME",
+          "name": "👋・boas-vindas",
+          "type": "TEXT",
+          "topic": "Todo viajante que chega a Thalhuria é recebido aqui."
+        },
+        {
+          "key": "CHAN_REGRAS",
+          "name": "📜・regras",
+          "type": "TEXT",
+          "topic": "As leis do reino. Ler é obrigatório; cumprir, mais ainda.",
+          "panel": {
+            "type": "EMBED",
+            "title": "📜 As Leis de Thalhuria",
+            "description": "Todo reino precisa de leis — as nossas são poucas e existem para que **todo mundo se sinta em casa**.\nAo atravessar os portões, você jura segui-las.\n\n> *A Guarda Real aplica as leis com bom senso. Mas aplica.*\n━━━━━━━━━━━━━━━━━━━━",
+            "fields": [
+              { "name": "⚔️ I · Honra acima de tudo", "value": "Trate todos com respeito. Sem ofensas, preconceito, assédio, ameaças ou discurso de ódio — nem \"de brincadeira\". Discordar é normal; humilhar, não." },
+              { "name": "🕊️ II · Paz no reino", "value": "Nada de provocar brigas, expor tretas ou arrastar dramas de outros servidores. Se algo te incomodou, chame a guarda em vez de revidar." },
+              { "name": "📢 III · Sem spam e sem propaganda", "value": "Sem flood, correntes, menções em massa ou divulgação de servidores, canais e lojas sem autorização. Convites e golpes são bloqueados automaticamente." },
+              { "name": "🔞 IV · Conteúdo digno", "value": "Proibido conteúdo NSFW, gore, ilegal, pirataria ou links suspeitos — em mensagens, apelidos, avatares ou status." },
+              { "name": "🗺️ V · Cada coisa em seu salão", "value": "Cada canal tem um tema: leia o tópico antes de postar. Comandos de bot ficam em {channel:CHAN_COMMANDS}." },
+              { "name": "🔐 VI · Segredos do reino", "value": "Não compartilhe dados pessoais — seus ou de outras pessoas. Prints de conversas privadas só com permissão." },
+              { "name": "🎭 VII · Sem disfarces", "value": "Não se passe por membros da staff, outras pessoas ou bots. Apelidos precisam ser legíveis e mencionáveis." },
+              { "name": "📜 VIII · As leis maiores", "value": "Siga os [Termos de Serviço](https://discord.com/terms) e as [Diretrizes da Comunidade](https://discord.com/guidelines) do Discord. É preciso ter **13 anos ou mais**." },
+              { "name": "⚖️ A Justiça do Reino", "value": "Advertências valem por **30 dias** e se acumulam:\n`3` 🔇 castigo de 1 hora\n`5` 🔇 castigo de 24 horas\n`7` 🔨 banimento\nInfrações graves (ódio, golpes, conteúdo ilegal) levam a banimento direto." },
+              { "name": "🧭 Viu algo errado?", "value": "Abra uma **denúncia sigilosa** em {channel:CHAN_TICKETS}. Só a guarda vê, e sua identidade fica protegida." }
+            ]
+          }
+        },
+        {
+          "key": "CHAN_VERIFY",
+          "name": "✅・verificação",
+          "type": "TEXT",
+          "topic": "Clique no botão para liberar o acesso ao servidor.",
+          "panel": {
+            "type": "VERIFY",
+            "title": "🗝️ Os Portões de Thalhuria",
+            "description": "Do outro lado deste portão estão a praça, as tavernas, os salões de voz e os eventos do reino.\n\n**Para entrar:**\n> 1. Leia as leis em {channel:CHAN_REGRAS}\n> 2. Clique no botão abaixo\n\nVocê se tornará {role:ROLE_MEMBER} e todo o reino será revelado. Ao entrar, você jura respeitar as leis.",
+            "colorHex": "#22C55E",
+            "buttonLabel": "Entrar no reino",
+            "buttonEmoji": "🗝️"
+          }
+        },
+        {
+          "key": "CHAN_AVISOS",
+          "name": "📢・anúncios",
+          "type": "ANNOUNCEMENT",
+          "topic": "Comunicados oficiais e novidades. Ative {role:ROLE_PING_NEWS} para ser marcado."
+        },
+        {
+          "key": "CHAN_EVENTS",
+          "name": "🎉・eventos",
+          "type": "TEXT",
+          "topic": "Torneios, noites de jogo e sorteios. Ative {role:ROLE_PING_EVENTS} para ser avisado."
+        },
+        {
+          "key": "CHAN_FAQ",
+          "name": "❓・faq",
+          "type": "TEXT",
+          "topic": "Perguntas frequentes e guias rápidos.",
+          "panel": {
+            "type": "EMBED",
+            "title": "❓ Perguntas Frequentes",
+            "description": "As dúvidas mais comuns de quem acabou de chegar.",
+            "fields": [
+              { "name": "Não vejo os canais, e agora?", "value": "Você precisa se verificar em {channel:CHAN_VERIFY}." },
+              { "name": "Como escolho meus cargos?", "value": "No menu de {channel:CHAN_SELF_ROLES}. Dá pra mudar quando quiser." },
+              { "name": "Como subo de nível?", "value": "Conversando e ficando em call com outras pessoas. Veja seu progresso com `/rank` e o ranking com `/top`. Níveis 5, 15, 30 e 50 dão cargos especiais!" },
+              { "name": "O que são Thalers?", "value": "A moeda do reino 🪙. Ganhe com atividade e com o `/daily`, e gaste na `/loja` com cores de nome e títulos." },
+              { "name": "Como crio minha própria call?", "value": "Entre em {channel:CHAN_VOICE_CREATE}: o bot cria uma sala só sua, com botões para trancar, renomear e limitar. Ela some quando todo mundo sai." },
+              { "name": "Tenho uma ideia para o servidor", "value": "Mande em {channel:CHAN_SUGGESTIONS} — a comunidade vota com ✅ / ❌." },
+              { "name": "Preciso falar com a staff", "value": "Abra um ticket em {channel:CHAN_TICKETS}. É privado e mais rápido que mandar DM." }
+            ]
+          }
+        },
+        {
+          "key": "CHAN_BENEFICIOS",
+          "name": "💎・vantagens",
+          "type": "TEXT",
+          "topic": "Recompensas para boosters, apoiadores e membros ativos.",
+          "panel": {
+            "type": "EMBED",
+            "title": "💎 Vantagens do Reino",
+            "description": "Quem fortalece Thalhuria ganha um tratamento especial.",
+            "colorHex": "#F472B6",
+            "fields": [
+              { "name": "🚀 Server Boosters", "value": "Cargo {role:ROLE_VIP}, emojis e figurinhas externos e destaque na lista de membros.", "inline": true },
+              { "name": "⚔️ Níveis", "value": "{role:ROLE_LVL_5} → {role:ROLE_LVL_15} → {role:ROLE_LVL_30} → {role:ROLE_LVL_50}", "inline": true },
+              { "name": "🪙 Loja", "value": "Cores de nome e títulos raros com seus Thalers: use `/loja`.", "inline": true },
+              { "name": "🎟️ Recrutamento", "value": "Cada amigo que você traz (e que se verifica) rende **250 Thalers**.\n{role:ROLE_RECRUITER_1} com 3 · {role:ROLE_RECRUITER_2} com 10 · {role:ROLE_RECRUITER_3} com 25 convites.", "inline": false }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "key": "CAT_COMMUNITY",
+      "name": "━━ 💬 PRAÇA CENTRAL ━━",
+      "position": 3,
+      "permissionOverrides": [
+        { "target": "@everyone", "allow": [], "deny": ["VIEW_CHANNEL"] },
+        {
+          "target": "ROLE_MEMBER",
+          "allow": ["VIEW_CHANNEL", "MESSAGE_SEND", "MESSAGE_HISTORY", "MESSAGE_ATTACH_FILES", "MESSAGE_EMBED_LINKS", "MESSAGE_ADD_REACTION"],
+          "deny": []
+        }
+      ],
+      "channels": [
+        {
+          "key": "CHAN_SELF_ROLES",
+          "name": "🎭・cargos",
+          "type": "TEXT",
+          "topic": "Escolha seus interesses e notificações no menu.",
+          "permissionOverrides": [
+            { "target": "ROLE_MEMBER", "allow": ["VIEW_CHANNEL", "MESSAGE_HISTORY"], "deny": ["MESSAGE_SEND", "MESSAGE_ADD_REACTION", "CREATE_PUBLIC_THREADS"] }
+          ],
+          "panel": {
+            "type": "SELF_ROLES",
+            "title": "🎭 Monte sua identidade",
+            "description": "Escolha no menu abaixo os cargos que combinam com você. Eles ajudam a galera a te encontrar e controlam quais avisos você recebe.\n\nPara remover um cargo, basta desmarcá-lo no menu.",
+            "placeholder": "Selecione seus cargos..."
+          }
+        },
+        { "key": "CHAN_CHAT", "name": "💬・praça", "type": "TEXT", "topic": "Papo livre: conte histórias, faça amigos, jogue conversa fora." },
+        { "key": "CHAN_MEDIA", "name": "📸・galeria", "type": "TEXT", "topic": "Fotos, setups, pets e artes. Comentários vão no tópico da postagem.", "slowmode": 10 },
+        { "key": "CHAN_GAMES", "name": "🎮・taverna-gamer", "type": "TEXT", "topic": "Jogos, clipes e convites pra jogatina. Marque {role:ROLE_INTEREST_GAMES} pra chamar a galera." },
+        { "key": "CHAN_MEMES", "name": "😂・memes", "type": "TEXT", "topic": "O canal mais importante do servidor. Sem repost, por favor.", "slowmode": 5 },
+        {
+          "key": "CHAN_SUGGESTIONS",
+          "name": "💡・sugestões",
+          "type": "TEXT",
+          "topic": "Uma ideia por mensagem. A comunidade vota com ✅ / ❌ e discute no tópico.",
+          "slowmode": 120,
+          "autoReactions": ["✅", "❌"],
+          "autoThread": true,
+          "panel": {
+            "type": "EMBED",
+            "title": "💡 Como sugerir",
+            "description": "Mande sua ideia em **uma única mensagem**. O bot adiciona ✅ e ❌ para votação e abre um tópico para a discussão.\n\nSugestões bem votadas são avaliadas pelo Conselho."
+          }
+        },
+        {
+          "key": "CHAN_LEVELUPS",
+          "name": "🏆・conquistas",
+          "type": "TEXT",
+          "topic": "Quem subiu de nível no reino. Veja o seu com /rank.",
+          "permissionOverrides": [
+            { "target": "ROLE_MEMBER", "allow": ["VIEW_CHANNEL", "MESSAGE_HISTORY", "MESSAGE_ADD_REACTION"], "deny": ["MESSAGE_SEND", "CREATE_PUBLIC_THREADS"] }
+          ]
+        },
+        {
+          "key": "CHAN_COMMANDS",
+          "name": "🤖・comandos",
+          "type": "TEXT",
+          "topic": "Comandos de bots e minigames. Mensagens aqui não dão XP.",
+          "panel": {
+            "type": "EMBED",
+            "title": "🤖 Comandos do Reino",
+            "description": "Tudo o que você pode fazer com o bot de Thalhuria.",
+            "fields": [
+              { "name": "⚔️ Níveis", "value": "`/rank` seu progresso · `/top` ranking do reino", "inline": false },
+              { "name": "🪙 Economia", "value": "`/daily` recompensa diária · `/saldo` · `/pagar` · `/loja`", "inline": false },
+              { "name": "🎟️ Convites", "value": "`/convites ver` seus recrutas · `/convites ranking` maiores recrutadores", "inline": false },
+              { "name": "📅 Eventos", "value": "`/evento listar` próximos eventos", "inline": false }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "key": "CAT_VOICE",
+      "name": "━━ 🔊 SALÕES DE VOZ ━━",
+      "position": 4,
+      "permissionOverrides": [
+        { "target": "@everyone", "allow": [], "deny": ["VIEW_CHANNEL", "VOICE_CONNECT"] },
+        { "target": "ROLE_MEMBER", "allow": ["VIEW_CHANNEL", "VOICE_CONNECT", "VOICE_SPEAK", "VOICE_STREAM", "VOICE_USE_VAD", "MESSAGE_SEND", "MESSAGE_HISTORY"], "deny": [] }
+      ],
+      "channels": [
+        { "key": "CHAN_VOICE_CREATE", "name": "➕・Criar Sala", "type": "VOICE", "joinToCreate": true, "tempChannelName": "🔊・Salão de {user}", "tempUserLimit": 0 },
+        { "key": "CHAN_VOICE_LOUNGE", "name": "☕・Lareira", "type": "VOICE" },
+        { "key": "CHAN_VOICE_GAMING_1", "name": "🎮・Arena 01", "type": "VOICE" },
+        { "key": "CHAN_VOICE_GAMING_2", "name": "🎮・Arena 02", "type": "VOICE" },
+        { "key": "CHAN_VOICE_DUO", "name": "👥・Duo", "type": "VOICE", "userLimit": 2 },
+        { "key": "CHAN_VOICE_MUSIC", "name": "🎵・Bardo", "type": "VOICE" },
+        { "key": "CHAN_VOICE_EVENTS", "name": "🎪・Palco dos Eventos", "type": "VOICE" }
+      ]
+    },
+
+    {
+      "key": "CAT_SUPPORT",
+      "name": "━━ 🎫 SUPORTE ━━",
+      "position": 5,
+      "permissionOverrides": [
+        { "target": "@everyone", "allow": [], "deny": ["VIEW_CHANNEL"] },
+        { "target": "ROLE_MEMBER", "allow": ["VIEW_CHANNEL", "MESSAGE_HISTORY"], "deny": ["MESSAGE_SEND", "MESSAGE_ADD_REACTION", "CREATE_PUBLIC_THREADS"] }
+      ],
+      "channels": [
+        {
+          "key": "CHAN_TICKETS",
+          "name": "🎫・abrir-ticket",
+          "type": "TEXT",
+          "topic": "Suporte, denúncias ou parcerias: abra um ticket privado.",
+          "panel": {
+            "type": "TICKET",
+            "title": "🎫 Central de Atendimento",
+            "description": "Escolha abaixo o assunto e um canal **privado** será criado só para você e a equipe certa.\n\nAo fechar, você recebe uma cópia da conversa na DM.",
+            "colorHex": "#3B82F6",
+            "fields": [
+              { "name": "🧭 Suporte", "value": "Dúvidas, cargos e problemas com o bot.", "inline": true },
+              { "name": "🚨 Denúncia", "value": "Sigilosa, vista apenas pela guarda.", "inline": true },
+              { "name": "🤝 Parceria", "value": "Propostas para o Alto Conselho.", "inline": true },
+              { "name": "💡 Antes de abrir", "value": "Confira se a resposta já está em {channel:CHAN_FAQ}." }
+            ],
+            "buttons": [
+              { "label": "Suporte", "emoji": "🧭", "style": "PRIMARY", "action": "TICKET", "ticketType": "suporte" },
+              { "label": "Denúncia", "emoji": "🚨", "style": "DANGER", "action": "TICKET", "ticketType": "denuncia" },
+              { "label": "Parceria", "emoji": "🤝", "style": "SUCCESS", "action": "TICKET", "ticketType": "parceria" }
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "key": "CAT_ADMIN",
+      "name": "━━ 🔒 CONSELHO ━━",
+      "position": 6,
+      "permissionOverrides": [
+        { "target": "@everyone", "allow": [], "deny": ["VIEW_CHANNEL"] },
+        { "target": "ROLE_MODERATOR", "allow": ["VIEW_CHANNEL", "MESSAGE_SEND", "MESSAGE_HISTORY", "VOICE_CONNECT", "VOICE_SPEAK"], "deny": [] },
+        { "target": "ROLE_SUPPORT", "allow": ["VIEW_CHANNEL", "MESSAGE_SEND", "MESSAGE_HISTORY", "VOICE_CONNECT", "VOICE_SPEAK"], "deny": [] },
+        { "target": "ROLE_EVENTS", "allow": ["VIEW_CHANNEL", "MESSAGE_SEND", "MESSAGE_HISTORY", "VOICE_CONNECT", "VOICE_SPEAK"], "deny": [] }
+      ],
+      "channels": [
+        {
+          "key": "CHAN_ADMIN_PANEL",
+          "name": "👑・conselho",
+          "type": "TEXT",
+          "topic": "Decisões e planejamento da equipe.",
+          "panel": {
+            "type": "EMBED",
+            "title": "🛡️ Guia Rápido da Staff",
+            "description": "Tudo o que a equipe precisa saber sobre o bot.",
+            "colorHex": "#EF4444",
+            "fields": [
+              { "name": "⚖️ Moderação", "value": "`/mod advertir` · `castigo` · `remover-castigo` · `expulsar` · `banir` · `limpar` · `historico` · `perdoar`\n3 advertências = castigo de 1h · 5 = 24h · 7 = ban (automático)." },
+              { "name": "📅 Eventos", "value": "`/evento criar` cria o evento do Discord, anuncia em {channel:CHAN_EVENTS} marcando {role:ROLE_PING_EVENTS} e lembra 15 min antes." },
+              { "name": "🎫 Tickets", "value": "Chegam na categoria Atendimento. Ao fechar, a transcrição vai para {channel:CHAN_LOGS}." },
+              { "name": "🛠️ Servidor", "value": "`/server-status` diagnóstico · `/sync-server simular:true` prévia das mudanças · `/sync-server` aplica · `/backup` exporta tudo." },
+              { "name": "📜 Logs", "value": "Moderação, mensagens apagadas/editadas e calls em {channel:CHAN_MODLOGS}. Sistema em {channel:CHAN_LOGS}." }
+            ]
+          }
+        },
+        { "key": "CHAN_MOD_CHAT", "name": "🛡️・guarda", "type": "TEXT", "topic": "Alinhamento da moderação, denúncias e advertências." },
+        { "key": "CHAN_STAFF_VOICE", "name": "🔒・Sala do Conselho", "type": "VOICE" }
+      ]
+    },
+
+    {
+      "key": "CAT_SYSTEM",
+      "name": "━━ ⚙️ ARQUIVOS ━━",
+      "position": 7,
+      "permissionOverrides": [
+        { "target": "@everyone", "allow": [], "deny": ["VIEW_CHANNEL"] },
+        { "target": "ROLE_MODERATOR", "allow": ["VIEW_CHANNEL", "MESSAGE_HISTORY"], "deny": ["MESSAGE_SEND"] }
+      ],
+      "channels": [
+        {
+          "key": "CHAN_LOGS",
+          "name": "📊・logs-do-sistema",
+          "type": "TEXT",
+          "topic": "Registro automático: entradas, saídas, cargos, canais, verificações, tickets e loja.",
+          "systemLogChannel": true
+        },
+        {
+          "key": "CHAN_MODLOGS",
+          "name": "🛡️・logs-moderação",
+          "type": "TEXT",
+          "topic": "Punições, AutoMod, mensagens apagadas/editadas e movimentação em calls."
+        }
+      ]
+    },
+
+    {
+      "key": "CAT_INDIVIDUAL_ROOMS",
+      "name": "━━ 🎟️ ATENDIMENTO ━━",
+      "position": 8,
+      "individualRoomsCategory": true,
+      "permissionOverrides": [
+        { "target": "@everyone", "allow": [], "deny": ["VIEW_CHANNEL"] },
+        { "target": "ROLE_MODERATOR", "allow": ["VIEW_CHANNEL", "MESSAGE_SEND", "MESSAGE_HISTORY"], "deny": [] }
+      ],
+      "channels": []
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+services:
+  bot:
+    build: .
+    container_name: thalhuria-bot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/app/data            # banco SQLite (XP, moedas, infrações, mapeamentos)
+      - ./backups:/app/backups      # arquivos do /backup
+      - ./templates:/app/templates  # templates por servidor (templates/<ID>.json)
+      - ./server-template.json:/app/server-template.json:ro  # edite e rode /sync-server, sem rebuild
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,1382 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Template de servidor do Bot Thalhuria",
+  "description": "Estrutura completa do servidor: cargos, categorias, canais, painéis e recursos automáticos. Veja docs/TEMPLATE.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "roles",
+    "categories"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "templateName": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "branding": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Identidade visual aplicada nos embeds do bot.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Nome da marca (placeholder {brand})."
+        },
+        "tagline": {
+          "type": "string"
+        },
+        "colorHex": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^#?[0-9A-Fa-f]{6}$",
+          "description": "Cor hexadecimal, ex.: #8B5CF6"
+        },
+        "footer": {
+          "type": "string",
+          "description": "Rodapé dos embeds."
+        },
+        "iconUrl": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Ícone do rodapé (padrão: ícone do servidor)."
+        },
+        "bannerUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "activity": {
+          "type": "string",
+          "description": "Status do bot: 'Assistindo <activity>'."
+        }
+      }
+    },
+    "onboarding": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Entrada de novos membros.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "autoRoleKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Cargo dado automaticamente a quem entra (ex.: ROLE_VISITOR)."
+        },
+        "botRoleKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Cargo dado automaticamente a bots."
+        },
+        "verifiedRoleKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Cargo concedido pelo botão de verificação."
+        },
+        "removeAutoRoleOnVerify": {
+          "type": "boolean",
+          "description": "Remover o cargo automático ao verificar."
+        },
+        "welcomeChannelKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Canal das boas-vindas."
+        },
+        "rulesChannelKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Servidores com Comunidade: canal definido como 'Regras' no setup."
+        },
+        "communityUpdatesChannelKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Servidores com Comunidade: canal que recebe as atualizações do Discord (use um canal da staff)."
+        },
+        "pingOnWelcome": {
+          "type": "boolean",
+          "description": "Marcar o membro na mensagem de boas-vindas."
+        },
+        "welcomeTitle": {
+          "type": "string"
+        },
+        "welcomeMessage": {
+          "type": "string",
+          "description": "Aceita {user}, {username}, {count}. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+        },
+        "welcomeImageUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verifiedMessage": {
+          "type": "string",
+          "description": "Resposta (privada) após verificar. Aceita {user}, {username}. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+        },
+        "dmWelcome": {
+          "type": "boolean",
+          "description": "Enviar também uma mensagem privada de boas-vindas."
+        },
+        "dmTitle": {
+          "type": "string"
+        },
+        "dmMessage": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Texto da DM. Aceita {user}, {username}, {count}. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+        },
+        "dmButtonChannelKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Canal aberto pelo botão da DM (ex.: CHAN_VERIFY)."
+        }
+      }
+    },
+    "tickets": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Sistema de tickets.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "categoryKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Categoria onde os tickets são criados."
+        },
+        "staffRoleKeys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Cargos que veem e atendem os tickets."
+        },
+        "channelPrefix": {
+          "type": "string"
+        },
+        "openTitle": {
+          "type": "string"
+        },
+        "openMessage": {
+          "type": "string",
+          "description": "Aceita {user}, {username}. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+        },
+        "closeDelaySeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transcripts": {
+          "type": "boolean",
+          "description": "Gerar transcrição HTML ao fechar (enviada ao canal de logs)."
+        },
+        "dmTranscript": {
+          "type": "boolean",
+          "description": "Enviar a transcrição também na DM de quem abriu."
+        },
+        "types": {
+          "type": "array",
+          "description": "Tipos de ticket usados pelos botões TICKET dos painéis.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "key",
+              "label"
+            ],
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "emoji": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "channelPrefix": {
+                "type": "string"
+              },
+              "staffRoleKeys": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "openMessage": {
+                "type": "string",
+                "description": "Aceita {user}, {username}. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+              }
+            }
+          }
+        }
+      }
+    },
+    "leveling": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "XP e níveis.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "xpMin": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "xpMax": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cooldownSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Intervalo mínimo entre mensagens que dão XP."
+        },
+        "xpPerVoiceMinute": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "XP por minuto em call com outra pessoa."
+        },
+        "announceChannelKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Canal dos anúncios de nível (vazio = no próprio canal)."
+        },
+        "levelUpMessage": {
+          "type": "string",
+          "description": "Aceita {user}, {username}, {level}. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+        },
+        "stackRewards": {
+          "type": "boolean",
+          "description": "false = mantém só o cargo do maior nível alcançado."
+        },
+        "rewards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "level": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "roleKey": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "ignoredChannelKeys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Canais que não dão XP."
+        }
+      }
+    },
+    "economy": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Moedas, /daily e loja.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "currencyName": {
+          "type": "string"
+        },
+        "currencyEmoji": {
+          "type": "string"
+        },
+        "coinsPerMessage": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coinsPerVoiceMinute": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dailyAmount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dailyStreakBonus": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Bônus por dia de sequência."
+        },
+        "maxStreakBonusDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shop": {
+          "type": "array",
+          "maxItems": 25,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "key",
+              "name",
+              "roleKey",
+              "price"
+            ],
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "emoji": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "roleKey": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "group": {
+                "type": "string",
+                "description": "Itens do mesmo grupo são exclusivos (ex.: uma cor por vez)."
+              }
+            }
+          }
+        }
+      }
+    },
+    "moderation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Logs de moderação, advertências e AutoMod.",
+      "properties": {
+        "modLogChannelKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "logMessageEdits": {
+          "type": "boolean"
+        },
+        "logMessageDeletes": {
+          "type": "boolean"
+        },
+        "logVoice": {
+          "type": "boolean"
+        },
+        "warningExpiryDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Advertências expiram após N dias (0 = nunca)."
+        },
+        "warnThresholds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "warnings": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "action": {
+                "enum": [
+                  "TIMEOUT",
+                  "KICK",
+                  "BAN"
+                ]
+              },
+              "durationMinutes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 40320
+              }
+            }
+          }
+        },
+        "automod": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Regras do AutoMod nativo do Discord.",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "blockedWords": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Palavras/expressões bloqueadas. Use * como curinga."
+            },
+            "blockInvites": {
+              "type": "boolean"
+            },
+            "mentionLimit": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 50
+            },
+            "antiSpam": {
+              "type": "boolean"
+            },
+            "timeoutMinutes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "blockMessage": {
+              "type": "string",
+              "maxLength": 150
+            },
+            "exemptRoleKeys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "welcomeCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Cartão de boas-vindas em imagem.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "backgroundColorHex": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^#?[0-9A-Fa-f]{6}$",
+          "description": "Cor hexadecimal, ex.: #8B5CF6"
+        },
+        "accentColorHex": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^#?[0-9A-Fa-f]{6}$",
+          "description": "Cor hexadecimal, ex.: #8B5CF6"
+        },
+        "backgroundImageUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Aceita {count}, {username}."
+        }
+      }
+    },
+    "events": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Eventos agendados.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "announceChannelKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pingRoleKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reminderMinutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timezone": {
+          "type": "string",
+          "description": "Fuso das datas do /evento criar, ex.: America/Sao_Paulo"
+        }
+      }
+    },
+    "invites": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rastreio de convites e recompensas de recrutamento.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "showInWelcome": {
+          "type": "boolean",
+          "description": "Mostrar 'Convidado por' nas boas-vindas. Placeholder {inviter} também disponível."
+        },
+        "coinsPerInvite": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Moedas para quem convidou, por convidado válido."
+        },
+        "rewardOnlyVerified": {
+          "type": "boolean",
+          "description": "Só recompensar quando o convidado se verificar (recomendado contra contas fake)."
+        },
+        "minAccountAgeDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Contas mais novas que isso não contam."
+        },
+        "removeTierOnLeave": {
+          "type": "boolean",
+          "description": "Recalcular (e remover) cargos de recrutador quando convidados saem."
+        },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "invites": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "roleKey": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "messages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Sobrescreve textos do bot (chaves de src/main/resources/messages.properties)."
+    },
+    "roles": {
+      "type": "array",
+      "description": "Ordem da lista = hierarquia (primeiro = mais alto).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "name"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]+$",
+            "description": "Identificador estável (MAIÚSCULAS_COM_UNDERLINE). NÃO mude depois do primeiro /setup-server: é por ela que o bot reencontra o item no Discord."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "colorHex": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^#?[0-9A-Fa-f]{6}$",
+            "description": "Cor hexadecimal, ex.: #8B5CF6"
+          },
+          "hoist": {
+            "type": "boolean",
+            "description": "Exibir separado na lista de membros."
+          },
+          "mentionable": {
+            "type": "boolean"
+          },
+          "adminRole": {
+            "type": "boolean",
+            "description": "Cargo de administração (acesso às salas privadas)."
+          },
+          "memberRole": {
+            "type": "boolean",
+            "description": "Cargo principal dado por /membro configurar."
+          },
+          "ownerRole": {
+            "type": "boolean",
+            "description": "Cargo dado automaticamente ao dono do servidor no setup/sync."
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "MANAGE_CHANNEL",
+                "MANAGE_SERVER",
+                "VIEW_AUDIT_LOGS",
+                "VIEW_CHANNEL",
+                "VIEW_GUILD_INSIGHTS",
+                "MANAGE_ROLES",
+                "MANAGE_PERMISSIONS",
+                "MANAGE_WEBHOOKS",
+                "MANAGE_GUILD_EXPRESSIONS",
+                "MANAGE_EVENTS",
+                "USE_EMBEDDED_ACTIVITIES",
+                "VIEW_CREATOR_MONETIZATION_ANALYTICS",
+                "CREATE_GUILD_EXPRESSIONS",
+                "CREATE_SCHEDULED_EVENTS",
+                "CREATE_INSTANT_INVITE",
+                "KICK_MEMBERS",
+                "BAN_MEMBERS",
+                "NICKNAME_CHANGE",
+                "NICKNAME_MANAGE",
+                "MODERATE_MEMBERS",
+                "MESSAGE_ADD_REACTION",
+                "MESSAGE_SEND",
+                "MESSAGE_TTS",
+                "MESSAGE_MANAGE",
+                "MESSAGE_EMBED_LINKS",
+                "MESSAGE_ATTACH_FILES",
+                "MESSAGE_HISTORY",
+                "MESSAGE_MENTION_EVERYONE",
+                "MESSAGE_EXT_EMOJI",
+                "USE_APPLICATION_COMMANDS",
+                "MESSAGE_EXT_STICKER",
+                "MESSAGE_ATTACH_VOICE_MESSAGE",
+                "MESSAGE_SEND_POLLS",
+                "USE_EXTERNAL_APPLICATIONS",
+                "MANAGE_THREADS",
+                "CREATE_PUBLIC_THREADS",
+                "CREATE_PRIVATE_THREADS",
+                "MESSAGE_SEND_IN_THREADS",
+                "PRIORITY_SPEAKER",
+                "VOICE_STREAM",
+                "VOICE_CONNECT",
+                "VOICE_SPEAK",
+                "VOICE_MUTE_OTHERS",
+                "VOICE_DEAF_OTHERS",
+                "VOICE_MOVE_OTHERS",
+                "VOICE_USE_VAD",
+                "VOICE_USE_SOUNDBOARD",
+                "VOICE_USE_EXTERNAL_SOUNDS",
+                "VOICE_SET_STATUS",
+                "REQUEST_TO_SPEAK",
+                "ADMINISTRATOR",
+                "MANAGE_MESSAGES",
+                "MANAGE_CHANNELS",
+                "MUTE_MEMBERS",
+                "DEAFEN_MEMBERS",
+                "MOVE_MEMBERS",
+                "EMBED_LINKS",
+                "ATTACH_FILES",
+                "ADD_REACTIONS",
+                "READ_MESSAGE_HISTORY",
+                "SEND_MESSAGES",
+                "SEND_MESSAGES_IN_THREADS",
+                "USE_EXTERNAL_EMOJIS",
+                "USE_EXTERNAL_STICKERS",
+                "MENTION_EVERYONE",
+                "CHANGE_NICKNAME",
+                "MANAGE_NICKNAMES",
+                "CONNECT",
+                "SPEAK",
+                "STREAM",
+                "USE_VAD",
+                "MANAGE_GUILD",
+                "SEND_POLLS"
+              ],
+              "description": "Nome da permissão (formato JDA, ex.: MESSAGE_SEND, ou formato da API do Discord, ex.: SEND_MESSAGES)."
+            },
+            "uniqueItems": true,
+            "description": "Permissões globais do cargo."
+          },
+          "selfAssignable": {
+            "type": "boolean",
+            "description": "Aparece no menu de cargos (painel SELF_ROLES)."
+          },
+          "emoji": {
+            "type": "string",
+            "description": "Emoji exibido no menu de cargos."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Descrição exibida no menu de cargos."
+          }
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "name"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]+$",
+            "description": "Identificador estável (MAIÚSCULAS_COM_UNDERLINE). NÃO mude depois do primeiro /setup-server: é por ela que o bot reencontra o item no Discord."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Ordem da categoria (0 = usar a ordem da lista)."
+          },
+          "individualRoomsCategory": {
+            "type": "boolean",
+            "description": "Categoria das salas privadas de /membro configurar."
+          },
+          "permissionOverrides": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "target"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "description": "@everyone, a key de um cargo (ex.: ROLE_MEMBER) ou o nome exato de um cargo."
+                },
+                "allow": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "MANAGE_CHANNEL",
+                      "MANAGE_SERVER",
+                      "VIEW_AUDIT_LOGS",
+                      "VIEW_CHANNEL",
+                      "VIEW_GUILD_INSIGHTS",
+                      "MANAGE_ROLES",
+                      "MANAGE_PERMISSIONS",
+                      "MANAGE_WEBHOOKS",
+                      "MANAGE_GUILD_EXPRESSIONS",
+                      "MANAGE_EVENTS",
+                      "USE_EMBEDDED_ACTIVITIES",
+                      "VIEW_CREATOR_MONETIZATION_ANALYTICS",
+                      "CREATE_GUILD_EXPRESSIONS",
+                      "CREATE_SCHEDULED_EVENTS",
+                      "CREATE_INSTANT_INVITE",
+                      "KICK_MEMBERS",
+                      "BAN_MEMBERS",
+                      "NICKNAME_CHANGE",
+                      "NICKNAME_MANAGE",
+                      "MODERATE_MEMBERS",
+                      "MESSAGE_ADD_REACTION",
+                      "MESSAGE_SEND",
+                      "MESSAGE_TTS",
+                      "MESSAGE_MANAGE",
+                      "MESSAGE_EMBED_LINKS",
+                      "MESSAGE_ATTACH_FILES",
+                      "MESSAGE_HISTORY",
+                      "MESSAGE_MENTION_EVERYONE",
+                      "MESSAGE_EXT_EMOJI",
+                      "USE_APPLICATION_COMMANDS",
+                      "MESSAGE_EXT_STICKER",
+                      "MESSAGE_ATTACH_VOICE_MESSAGE",
+                      "MESSAGE_SEND_POLLS",
+                      "USE_EXTERNAL_APPLICATIONS",
+                      "MANAGE_THREADS",
+                      "CREATE_PUBLIC_THREADS",
+                      "CREATE_PRIVATE_THREADS",
+                      "MESSAGE_SEND_IN_THREADS",
+                      "PRIORITY_SPEAKER",
+                      "VOICE_STREAM",
+                      "VOICE_CONNECT",
+                      "VOICE_SPEAK",
+                      "VOICE_MUTE_OTHERS",
+                      "VOICE_DEAF_OTHERS",
+                      "VOICE_MOVE_OTHERS",
+                      "VOICE_USE_VAD",
+                      "VOICE_USE_SOUNDBOARD",
+                      "VOICE_USE_EXTERNAL_SOUNDS",
+                      "VOICE_SET_STATUS",
+                      "REQUEST_TO_SPEAK",
+                      "ADMINISTRATOR",
+                      "MANAGE_MESSAGES",
+                      "MANAGE_CHANNELS",
+                      "MUTE_MEMBERS",
+                      "DEAFEN_MEMBERS",
+                      "MOVE_MEMBERS",
+                      "EMBED_LINKS",
+                      "ATTACH_FILES",
+                      "ADD_REACTIONS",
+                      "READ_MESSAGE_HISTORY",
+                      "SEND_MESSAGES",
+                      "SEND_MESSAGES_IN_THREADS",
+                      "USE_EXTERNAL_EMOJIS",
+                      "USE_EXTERNAL_STICKERS",
+                      "MENTION_EVERYONE",
+                      "CHANGE_NICKNAME",
+                      "MANAGE_NICKNAMES",
+                      "CONNECT",
+                      "SPEAK",
+                      "STREAM",
+                      "USE_VAD",
+                      "MANAGE_GUILD",
+                      "SEND_POLLS"
+                    ],
+                    "description": "Nome da permissão (formato JDA, ex.: MESSAGE_SEND, ou formato da API do Discord, ex.: SEND_MESSAGES)."
+                  },
+                  "uniqueItems": true,
+                  "description": "Permissões liberadas."
+                },
+                "deny": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "MANAGE_CHANNEL",
+                      "MANAGE_SERVER",
+                      "VIEW_AUDIT_LOGS",
+                      "VIEW_CHANNEL",
+                      "VIEW_GUILD_INSIGHTS",
+                      "MANAGE_ROLES",
+                      "MANAGE_PERMISSIONS",
+                      "MANAGE_WEBHOOKS",
+                      "MANAGE_GUILD_EXPRESSIONS",
+                      "MANAGE_EVENTS",
+                      "USE_EMBEDDED_ACTIVITIES",
+                      "VIEW_CREATOR_MONETIZATION_ANALYTICS",
+                      "CREATE_GUILD_EXPRESSIONS",
+                      "CREATE_SCHEDULED_EVENTS",
+                      "CREATE_INSTANT_INVITE",
+                      "KICK_MEMBERS",
+                      "BAN_MEMBERS",
+                      "NICKNAME_CHANGE",
+                      "NICKNAME_MANAGE",
+                      "MODERATE_MEMBERS",
+                      "MESSAGE_ADD_REACTION",
+                      "MESSAGE_SEND",
+                      "MESSAGE_TTS",
+                      "MESSAGE_MANAGE",
+                      "MESSAGE_EMBED_LINKS",
+                      "MESSAGE_ATTACH_FILES",
+                      "MESSAGE_HISTORY",
+                      "MESSAGE_MENTION_EVERYONE",
+                      "MESSAGE_EXT_EMOJI",
+                      "USE_APPLICATION_COMMANDS",
+                      "MESSAGE_EXT_STICKER",
+                      "MESSAGE_ATTACH_VOICE_MESSAGE",
+                      "MESSAGE_SEND_POLLS",
+                      "USE_EXTERNAL_APPLICATIONS",
+                      "MANAGE_THREADS",
+                      "CREATE_PUBLIC_THREADS",
+                      "CREATE_PRIVATE_THREADS",
+                      "MESSAGE_SEND_IN_THREADS",
+                      "PRIORITY_SPEAKER",
+                      "VOICE_STREAM",
+                      "VOICE_CONNECT",
+                      "VOICE_SPEAK",
+                      "VOICE_MUTE_OTHERS",
+                      "VOICE_DEAF_OTHERS",
+                      "VOICE_MOVE_OTHERS",
+                      "VOICE_USE_VAD",
+                      "VOICE_USE_SOUNDBOARD",
+                      "VOICE_USE_EXTERNAL_SOUNDS",
+                      "VOICE_SET_STATUS",
+                      "REQUEST_TO_SPEAK",
+                      "ADMINISTRATOR",
+                      "MANAGE_MESSAGES",
+                      "MANAGE_CHANNELS",
+                      "MUTE_MEMBERS",
+                      "DEAFEN_MEMBERS",
+                      "MOVE_MEMBERS",
+                      "EMBED_LINKS",
+                      "ATTACH_FILES",
+                      "ADD_REACTIONS",
+                      "READ_MESSAGE_HISTORY",
+                      "SEND_MESSAGES",
+                      "SEND_MESSAGES_IN_THREADS",
+                      "USE_EXTERNAL_EMOJIS",
+                      "USE_EXTERNAL_STICKERS",
+                      "MENTION_EVERYONE",
+                      "CHANGE_NICKNAME",
+                      "MANAGE_NICKNAMES",
+                      "CONNECT",
+                      "SPEAK",
+                      "STREAM",
+                      "USE_VAD",
+                      "MANAGE_GUILD",
+                      "SEND_POLLS"
+                    ],
+                    "description": "Nome da permissão (formato JDA, ex.: MESSAGE_SEND, ou formato da API do Discord, ex.: SEND_MESSAGES)."
+                  },
+                  "uniqueItems": true,
+                  "description": "Permissões bloqueadas."
+                }
+              }
+            }
+          },
+          "channels": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "key",
+                "name"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9_]+$",
+                  "description": "Identificador estável (MAIÚSCULAS_COM_UNDERLINE). NÃO mude depois do primeiro /setup-server: é por ela que o bot reencontra o item no Discord."
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 100,
+                  "description": "Nome do canal. Canais de texto viram minúsculas e espaços viram hífens."
+                },
+                "type": {
+                  "enum": [
+                    "TEXT",
+                    "VOICE",
+                    "ANNOUNCEMENT",
+                    "NEWS"
+                  ],
+                  "description": "ANNOUNCEMENT exige Comunidade ativada (senão vira TEXT)."
+                },
+                "topic": {
+                  "type": "string",
+                  "maxLength": 1024,
+                  "description": "Tópico (descrição) do canal de texto. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+                },
+                "systemLogChannel": {
+                  "type": "boolean",
+                  "description": "Canal que recebe os logs de auditoria. Exatamente 1 no template."
+                },
+                "permissionOverrides": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "target"
+                    ],
+                    "properties": {
+                      "target": {
+                        "type": "string",
+                        "description": "@everyone, a key de um cargo (ex.: ROLE_MEMBER) ou o nome exato de um cargo."
+                      },
+                      "allow": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "MANAGE_CHANNEL",
+                            "MANAGE_SERVER",
+                            "VIEW_AUDIT_LOGS",
+                            "VIEW_CHANNEL",
+                            "VIEW_GUILD_INSIGHTS",
+                            "MANAGE_ROLES",
+                            "MANAGE_PERMISSIONS",
+                            "MANAGE_WEBHOOKS",
+                            "MANAGE_GUILD_EXPRESSIONS",
+                            "MANAGE_EVENTS",
+                            "USE_EMBEDDED_ACTIVITIES",
+                            "VIEW_CREATOR_MONETIZATION_ANALYTICS",
+                            "CREATE_GUILD_EXPRESSIONS",
+                            "CREATE_SCHEDULED_EVENTS",
+                            "CREATE_INSTANT_INVITE",
+                            "KICK_MEMBERS",
+                            "BAN_MEMBERS",
+                            "NICKNAME_CHANGE",
+                            "NICKNAME_MANAGE",
+                            "MODERATE_MEMBERS",
+                            "MESSAGE_ADD_REACTION",
+                            "MESSAGE_SEND",
+                            "MESSAGE_TTS",
+                            "MESSAGE_MANAGE",
+                            "MESSAGE_EMBED_LINKS",
+                            "MESSAGE_ATTACH_FILES",
+                            "MESSAGE_HISTORY",
+                            "MESSAGE_MENTION_EVERYONE",
+                            "MESSAGE_EXT_EMOJI",
+                            "USE_APPLICATION_COMMANDS",
+                            "MESSAGE_EXT_STICKER",
+                            "MESSAGE_ATTACH_VOICE_MESSAGE",
+                            "MESSAGE_SEND_POLLS",
+                            "USE_EXTERNAL_APPLICATIONS",
+                            "MANAGE_THREADS",
+                            "CREATE_PUBLIC_THREADS",
+                            "CREATE_PRIVATE_THREADS",
+                            "MESSAGE_SEND_IN_THREADS",
+                            "PRIORITY_SPEAKER",
+                            "VOICE_STREAM",
+                            "VOICE_CONNECT",
+                            "VOICE_SPEAK",
+                            "VOICE_MUTE_OTHERS",
+                            "VOICE_DEAF_OTHERS",
+                            "VOICE_MOVE_OTHERS",
+                            "VOICE_USE_VAD",
+                            "VOICE_USE_SOUNDBOARD",
+                            "VOICE_USE_EXTERNAL_SOUNDS",
+                            "VOICE_SET_STATUS",
+                            "REQUEST_TO_SPEAK",
+                            "ADMINISTRATOR",
+                            "MANAGE_MESSAGES",
+                            "MANAGE_CHANNELS",
+                            "MUTE_MEMBERS",
+                            "DEAFEN_MEMBERS",
+                            "MOVE_MEMBERS",
+                            "EMBED_LINKS",
+                            "ATTACH_FILES",
+                            "ADD_REACTIONS",
+                            "READ_MESSAGE_HISTORY",
+                            "SEND_MESSAGES",
+                            "SEND_MESSAGES_IN_THREADS",
+                            "USE_EXTERNAL_EMOJIS",
+                            "USE_EXTERNAL_STICKERS",
+                            "MENTION_EVERYONE",
+                            "CHANGE_NICKNAME",
+                            "MANAGE_NICKNAMES",
+                            "CONNECT",
+                            "SPEAK",
+                            "STREAM",
+                            "USE_VAD",
+                            "MANAGE_GUILD",
+                            "SEND_POLLS"
+                          ],
+                          "description": "Nome da permissão (formato JDA, ex.: MESSAGE_SEND, ou formato da API do Discord, ex.: SEND_MESSAGES)."
+                        },
+                        "uniqueItems": true,
+                        "description": "Permissões liberadas."
+                      },
+                      "deny": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "MANAGE_CHANNEL",
+                            "MANAGE_SERVER",
+                            "VIEW_AUDIT_LOGS",
+                            "VIEW_CHANNEL",
+                            "VIEW_GUILD_INSIGHTS",
+                            "MANAGE_ROLES",
+                            "MANAGE_PERMISSIONS",
+                            "MANAGE_WEBHOOKS",
+                            "MANAGE_GUILD_EXPRESSIONS",
+                            "MANAGE_EVENTS",
+                            "USE_EMBEDDED_ACTIVITIES",
+                            "VIEW_CREATOR_MONETIZATION_ANALYTICS",
+                            "CREATE_GUILD_EXPRESSIONS",
+                            "CREATE_SCHEDULED_EVENTS",
+                            "CREATE_INSTANT_INVITE",
+                            "KICK_MEMBERS",
+                            "BAN_MEMBERS",
+                            "NICKNAME_CHANGE",
+                            "NICKNAME_MANAGE",
+                            "MODERATE_MEMBERS",
+                            "MESSAGE_ADD_REACTION",
+                            "MESSAGE_SEND",
+                            "MESSAGE_TTS",
+                            "MESSAGE_MANAGE",
+                            "MESSAGE_EMBED_LINKS",
+                            "MESSAGE_ATTACH_FILES",
+                            "MESSAGE_HISTORY",
+                            "MESSAGE_MENTION_EVERYONE",
+                            "MESSAGE_EXT_EMOJI",
+                            "USE_APPLICATION_COMMANDS",
+                            "MESSAGE_EXT_STICKER",
+                            "MESSAGE_ATTACH_VOICE_MESSAGE",
+                            "MESSAGE_SEND_POLLS",
+                            "USE_EXTERNAL_APPLICATIONS",
+                            "MANAGE_THREADS",
+                            "CREATE_PUBLIC_THREADS",
+                            "CREATE_PRIVATE_THREADS",
+                            "MESSAGE_SEND_IN_THREADS",
+                            "PRIORITY_SPEAKER",
+                            "VOICE_STREAM",
+                            "VOICE_CONNECT",
+                            "VOICE_SPEAK",
+                            "VOICE_MUTE_OTHERS",
+                            "VOICE_DEAF_OTHERS",
+                            "VOICE_MOVE_OTHERS",
+                            "VOICE_USE_VAD",
+                            "VOICE_USE_SOUNDBOARD",
+                            "VOICE_USE_EXTERNAL_SOUNDS",
+                            "VOICE_SET_STATUS",
+                            "REQUEST_TO_SPEAK",
+                            "ADMINISTRATOR",
+                            "MANAGE_MESSAGES",
+                            "MANAGE_CHANNELS",
+                            "MUTE_MEMBERS",
+                            "DEAFEN_MEMBERS",
+                            "MOVE_MEMBERS",
+                            "EMBED_LINKS",
+                            "ATTACH_FILES",
+                            "ADD_REACTIONS",
+                            "READ_MESSAGE_HISTORY",
+                            "SEND_MESSAGES",
+                            "SEND_MESSAGES_IN_THREADS",
+                            "USE_EXTERNAL_EMOJIS",
+                            "USE_EXTERNAL_STICKERS",
+                            "MENTION_EVERYONE",
+                            "CHANGE_NICKNAME",
+                            "MANAGE_NICKNAMES",
+                            "CONNECT",
+                            "SPEAK",
+                            "STREAM",
+                            "USE_VAD",
+                            "MANAGE_GUILD",
+                            "SEND_POLLS"
+                          ],
+                          "description": "Nome da permissão (formato JDA, ex.: MESSAGE_SEND, ou formato da API do Discord, ex.: SEND_MESSAGES)."
+                        },
+                        "uniqueItems": true,
+                        "description": "Permissões bloqueadas."
+                      }
+                    }
+                  },
+                  "description": "Regras aplicadas POR CIMA das permissões da categoria. Vazio = canal sincronizado com a categoria."
+                },
+                "slowmode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 21600,
+                  "description": "Modo lento em segundos (texto)."
+                },
+                "nsfw": {
+                  "type": "boolean",
+                  "description": "Canal com restrição de idade."
+                },
+                "userLimit": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 99,
+                  "description": "Limite de pessoas (voz). 0 = ilimitado."
+                },
+                "joinToCreate": {
+                  "type": "boolean",
+                  "description": "Canal de voz 'entre para criar': gera uma sala temporária para quem entrar."
+                },
+                "tempChannelName": {
+                  "type": "string",
+                  "description": "Nome das salas temporárias. {user} = nome do membro."
+                },
+                "tempUserLimit": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 99,
+                  "description": "Limite inicial das salas temporárias."
+                },
+                "autoReactions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Reações adicionadas automaticamente em toda mensagem do canal (ex.: votação)."
+                },
+                "autoThread": {
+                  "type": "boolean",
+                  "description": "Abrir um tópico de discussão para cada mensagem."
+                },
+                "panel": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "Mensagem fixa que o bot publica no canal e mantém atualizada a cada /sync-server.",
+                  "properties": {
+                    "type": {
+                      "enum": [
+                        "EMBED",
+                        "VERIFY",
+                        "SELF_ROLES",
+                        "TICKET"
+                      ],
+                      "description": "EMBED = só texto · VERIFY = botão de verificação · SELF_ROLES = menu de cargos · TICKET = botão de abrir ticket"
+                    },
+                    "title": {
+                      "type": "string",
+                      "maxLength": 256,
+                      "description": "Título do embed. Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+                    },
+                    "description": {
+                      "type": "string",
+                      "maxLength": 4096,
+                      "description": "Texto principal (Markdown do Discord). Aceita {server}, {brand}, {channel:KEY} e {role:KEY}."
+                    },
+                    "colorHex": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "pattern": "^#?[0-9A-Fa-f]{6}$",
+                      "description": "Cor hexadecimal, ex.: #8B5CF6"
+                    },
+                    "imageUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Imagem grande no fim do embed (banner)."
+                    },
+                    "thumbnailUrl": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Imagem pequena no canto do embed."
+                    },
+                    "fields": {
+                      "type": "array",
+                      "maxItems": 25,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "name",
+                          "value"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "maxLength": 256
+                          },
+                          "value": {
+                            "type": "string",
+                            "maxLength": 1024
+                          },
+                          "inline": {
+                            "type": "boolean",
+                            "description": "Exibir lado a lado com outros fields inline."
+                          }
+                        }
+                      }
+                    },
+                    "buttonLabel": {
+                      "type": "string",
+                      "maxLength": 80,
+                      "description": "Texto do botão (VERIFY e TICKET)."
+                    },
+                    "buttonEmoji": {
+                      "type": "string",
+                      "description": "Emoji do botão: unicode (🗝️) ou customizado (<:nome:id>)."
+                    },
+                    "placeholder": {
+                      "type": "string",
+                      "maxLength": 150,
+                      "description": "Texto do menu quando nada está selecionado (SELF_ROLES)."
+                    },
+                    "buttons": {
+                      "type": "array",
+                      "maxItems": 5,
+                      "description": "Botões personalizados (substituem o botão padrão do tipo).",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "label": {
+                            "type": "string",
+                            "maxLength": 80
+                          },
+                          "emoji": {
+                            "type": "string"
+                          },
+                          "style": {
+                            "enum": [
+                              "PRIMARY",
+                              "SECONDARY",
+                              "SUCCESS",
+                              "DANGER"
+                            ]
+                          },
+                          "action": {
+                            "enum": [
+                              "TICKET",
+                              "VERIFY",
+                              "ROLE",
+                              "URL"
+                            ],
+                            "description": "TICKET abre ticket (do ticketType) · VERIFY verifica · ROLE alterna o cargo roleKey · URL abre um link"
+                          },
+                          "ticketType": {
+                            "type": "string",
+                            "description": "key de tickets.types"
+                          },
+                          "roleKey": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "counter": {
+                  "enum": [
+                    "MEMBERS",
+                    "HUMANS",
+                    "BOTS",
+                    "ONLINE",
+                    "BOOSTS"
+                  ],
+                  "description": "Canal de voz contador: o nome deve conter {value} (atualizado a cada 10 min)."
+                }
+              }
+            },
+            "description": "Ordem da lista = ordem dos canais na categoria."
+          }
+        }
+      }
+    }
+  }
+}
