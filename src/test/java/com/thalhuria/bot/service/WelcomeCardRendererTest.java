@@ -23,9 +23,9 @@ class WelcomeCardRendererTest {
     void rendersWelcomeCard() throws Exception {
         System.setProperty("java.awt.headless", "true");
         WelcomeCardConfig themed = new WelcomeCardConfig();
-        themed.setBackgroundColorHex("#2A0A0F");
-        themed.setAccentColorHex("#E3B55B");
-        byte[] png = new WelcomeCardRenderer().render(themed, new Color(0xE3B55B),
+        themed.setBackgroundColorHex("#4A0E0E");
+        themed.setAccentColorHex("#D4AF6A");
+        byte[] png = new WelcomeCardRenderer().render(themed, new Color(0xD4AF6A),
                 null, "Viajante 🐉 Lendário", "Bem-vindo(a) ao reino de Thaluria", "Habitante nº 1.234",
                 "Thaluria • o reino da resenha", 42L);
         BufferedImage img = check(png, 1200, 420);
@@ -39,7 +39,7 @@ class WelcomeCardRendererTest {
         RankCardRenderer.RankData data = new RankCardRenderer.RankData(
                 "Cavaleira Aurora", null, "⚔️ Cavaleiro", 17, 3, 1240, 2395, 15420,
                 4821, 1325, 3480L, "Thalurians", "🏰 Barão no nível 30",
-                new Color(0xE3B55B), new Color(0x2A0A0F), null, 7L);
+                new Color(0xD4AF6A), new Color(0x4A0E0E), null, 7L);
         byte[] png = new RankCardRenderer().render(data);
         check(png, 1200, 380);
         save("rank.png", png);
@@ -47,7 +47,7 @@ class WelcomeCardRendererTest {
         // Sem economia, sem título e com nome enorme: não pode quebrar o layout
         byte[] minimal = new RankCardRenderer().render(new RankCardRenderer.RankData(
                 "Um Nome Absurdamente Grande Para Testar O Encaixe", null, null, 0, 120, 0, 100, 0,
-                0, 0, null, null, null, new Color(0xD7263D), new Color(0x2A0A0F), null, 1L));
+                0, 0, null, null, null, new Color(0xD7263D), new Color(0x4A0E0E), null, 1L));
         check(minimal, 1200, 380);
         save("rank-minimal.png", minimal);
     }
@@ -65,7 +65,7 @@ class WelcomeCardRendererTest {
         }
         LeaderboardRenderer.Row self = new LeaderboardRenderer.Row(37, "Você Mesmo", null, "Nível 6", "1.700 XP · 85 mensagens", 1700.0 / xp[0]);
         byte[] png = new LeaderboardRenderer().render("Hall da fama", "Os maiores de Thaluria", rows, self,
-                new Color(0xE3B55B), new Color(0x2A0A0F), null, 3L);
+                new Color(0xD4AF6A), new Color(0x4A0E0E), null, 3L);
         assertNotNull(ImageIO.read(new ByteArrayInputStream(png)));
         save("top.png", png);
     }

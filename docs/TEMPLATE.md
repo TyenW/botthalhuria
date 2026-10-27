@@ -52,7 +52,7 @@ Todo cargo, categoria e canal tem uma `key` (ex.: `ROLE_MEMBER`, `CHAN_REGRAS`).
 ```jsonc
 {
   "$schema": "./server-template.schema.json",
-  "templateName": "Thalhuria • Reino da Resenha",
+  "templateName": "Thaluria • Reino da Resenha",
   "version": "4.0.0",
   "branding":    { ... },  // cores, rodapé, status do bot
   "onboarding":  { ... },  // cargo automático, boas-vindas, verificação
@@ -76,11 +76,11 @@ Todas as seções de configuração são opcionais: se omitidas, usam valores pa
 
 | Campo | Padrão | Descrição |
 | :--- | :--- | :--- |
-| `name` | `Thalhuria` | Nome da marca, usado no placeholder `{brand}`. |
+| `name` | `Thaluria` | Nome da marca, usado no placeholder `{brand}`. |
 | `tagline` | — | Frase de efeito (reservado para usos futuros). |
-| `colorHex` | `#8B5CF6` | Cor padrão de todos os embeds do bot. |
-| `footer` | `Thalhuria` | Texto do rodapé dos embeds. |
-| `iconUrl` | ícone do servidor | Ícone do rodapé. |
+| `colorHex` | `#D4AF6A` | Cor padrão de todos os embeds do bot (Ouro Thaluria). |
+| `footer` | `Thaluria` | Texto do rodapé dos embeds. |
+| `iconUrl` | ícone do servidor | Logo: ícone do rodapé e thumbnail dos painéis (tickets, verificação, salas temporárias…) que não definem `thumbnailUrl`. |
 | `activity` | — | Status do bot: aparece como **"Assistindo _activity_"**. Atualizado ao iniciar e a cada `/sync-server`. |
 
 ---
@@ -93,7 +93,7 @@ Todas as seções de configuração são opcionais: se omitidas, usam valores pa
 {
   "key": "ROLE_MEMBER",
   "name": "✨ │ Cidadão",
-  "colorHex": "#8B5CF6",
+  "colorHex": "#E6C27A",
   "hoist": true,
   "mentionable": false,
   "memberRole": true,
@@ -118,7 +118,7 @@ Todas as seções de configuração são opcionais: se omitidas, usam valores pa
 
 | Key | Nome | Papel |
 | :--- | :--- | :--- |
-| `ROLE_OWNER` | 👑 Soberano de Thalhuria | **Dono** — dado automaticamente |
+| `ROLE_OWNER` | 👑 Soberano de Thaluria | **Dono** — dado automaticamente |
 | `ROLE_ADMIN` | ⚜️ Alto Conselho | **Administradores** |
 | `ROLE_MODERATOR` | 🛡️ Guardião Real | Moderação (ban, kick, castigo, mensagens, voz, eventos) |
 | `ROLE_SUPPORT` | 🧭 Guia do Reino | Suporte e tickets |
@@ -214,7 +214,7 @@ Um painel é uma mensagem que o bot **publica uma vez e depois edita** a cada `/
   "type": "VERIFY",
   "title": "✅ Atravesse os Portões",
   "description": "Leu as leis em {channel:CHAN_REGRAS}? Clique abaixo!",
-  "colorHex": "#22C55E",
+  "colorHex": "#D4AF6A",
   "buttonLabel": "Entrar no reino",
   "buttonEmoji": "🗝️",
   "fields": [ { "name": "Título", "value": "Texto", "inline": false } ],
@@ -222,6 +222,8 @@ Um painel é uma mensagem que o bot **publica uma vez e depois edita** a cada `/
   "thumbnailUrl": null
 }
 ```
+
+Sem `thumbnailUrl`, o painel usa a logo (`branding.iconUrl` ou o ícone do servidor).
 
 | `type` | O que adiciona |
 | :--- | :--- |
@@ -236,8 +238,8 @@ Limites do Discord (o validador avisa): título 256, descrição 4096, até 25 f
 
 ```json
 "buttons": [
-  { "label": "Suporte",  "emoji": "🧭", "style": "PRIMARY", "action": "TICKET", "ticketType": "suporte" },
-  { "label": "Denúncia", "emoji": "🚨", "style": "DANGER",  "action": "TICKET", "ticketType": "denuncia" },
+  { "label": "Suporte",  "emoji": "🧭", "style": "SECONDARY", "action": "TICKET", "ticketType": "suporte" },
+  { "label": "Denúncia", "emoji": "🛡️", "style": "DANGER",    "action": "TICKET", "ticketType": "denuncia" },
   { "label": "Quero ser avisado", "emoji": "🔔", "action": "ROLE", "roleKey": "ROLE_PING_NEWS" },
   { "label": "Nosso site", "action": "URL", "url": "https://exemplo.com" }
 ]
@@ -250,7 +252,7 @@ Limites do Discord (o validador avisa): título 256, descrição 4096, até 25 f
 | `ROLE` | Alterna o cargo `roleKey`: dá se o membro não tem, tira se já tem. |
 | `URL` | Botão de link. |
 
-`style`: `PRIMARY` (azul), `SECONDARY` (cinza), `SUCCESS` (verde), `DANGER` (vermelho). Máximo de 5 botões. Quando `buttons` existe, ele substitui o botão padrão do tipo (o menu do `SELF_ROLES` continua).
+`style`: `SECONDARY` (cinza escuro, **padrão**), `DANGER` (vermelho), `SUCCESS` (verde), `PRIMARY` (azul). O azul destoa do carmesim e dourado da logo: prefira `SECONDARY` com emojis medievais (⚔️ 📜 🛡️ 🪙) e `DANGER` para ações de destaque. Máximo de 5 botões. Quando `buttons` existe, ele substitui o botão padrão do tipo (o menu do `SELF_ROLES` continua).
 
 ---
 
@@ -528,19 +530,19 @@ Alertas vão para o `modLogChannelKey`.
 ```json
 "welcomeCard": {
   "enabled": true,
-  "backgroundColorHex": "#1E1B2E",
-  "accentColorHex": null,
+  "backgroundColorHex": "#4A0E0E",
+  "accentColorHex": "#D4AF6A",
   "backgroundImageUrl": null,
-  "title": "BEM-VINDO(A) A THALHURIA",
+  "title": "BEM-VINDO(A) A THALURIA",
   "subtitle": "Habitante nº {count} do reino"
 }
 ```
 
 ![Cartão de boas-vindas](img/cartao-boas-vindas.png)
 
-Imagem 1200×420: fundo em degradê com brilhos e partículas (ou `backgroundImageUrl` escurecida), avatar com glow e anel na cor de destaque (padrão: `branding.colorHex`), título em letras espaçadas, nome em destaque, selo com o `subtitle` e `branding.footer` no canto. As partículas usam o ID do membro, então cada cartão é único. Emojis são removidos dos textos da imagem (Java2D não desenha emoji). Se a imagem falhar, a mensagem sai sem ela.
+Imagem 1200×420: fundo em degradê radial carmesim (claro no centro, quase preto nas bordas, como a vinheta da logo) com brasas e moldura dupla dourada (ou `backgroundImageUrl` escurecida), avatar com glow, anel dourado e círculo de runas, título em Cinzel com letras espaçadas, nome em destaque, selo com o `subtitle` e `branding.footer` no canto. As partículas usam o ID do membro, então cada cartão é único. Emojis são removidos dos textos da imagem (Java2D não desenha emoji). Se a imagem falhar, a mensagem sai sem ela.
 
-O **cartão do `/rank`** usa o mesmo fundo (`backgroundColorHex`/`backgroundImageUrl`) com o anel na cor do cargo do membro:
+O **cartão do `/rank`** usa o mesmo fundo (`backgroundColorHex`/`backgroundImageUrl`) e o mesmo anel dourado; a barra de XP fica na cor do cargo do membro:
 
 ![Cartão de rank](img/cartao-rank.png)
 

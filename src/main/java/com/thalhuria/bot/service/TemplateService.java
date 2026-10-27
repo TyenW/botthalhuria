@@ -2,6 +2,7 @@ package com.thalhuria.bot.service;
 
 import com.thalhuria.bot.config.BrandingConfig;
 import com.thalhuria.bot.config.ChannelTemplate;
+import com.thalhuria.bot.config.Palette;
 import com.thalhuria.bot.config.ServerTemplate;
 import com.thalhuria.bot.database.ServerMapRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -212,20 +213,26 @@ public class TemplateService {
     }
 
     public Color brandColor(Guild guild) {
-        return parseColor(get(guild).getBranding().getColorHex(), new Color(0xE3B55B));
+        return parseColor(get(guild).getBranding().getColorHex(), Palette.GOLD);
+    }
+
+    /**
+     * URL da logo: branding.iconUrl ou, sem ela, o ícone do servidor. Pode ser null.
+     */
+    public String logoUrl(Guild guild) {
+        BrandingConfig branding = get(guild).getBranding();
+        return branding.getIconUrl() != null && !branding.getIconUrl().isBlank()
+                ? branding.getIconUrl()
+                : guild.getIconUrl();
     }
 
     /**
      * EmbedBuilder já com cor, rodapé e timestamp da identidade visual do servidor.
      */
     public EmbedBuilder brandedEmbed(Guild guild) {
-        BrandingConfig branding = get(guild).getBranding();
-        String icon = branding.getIconUrl() != null && !branding.getIconUrl().isBlank()
-                ? branding.getIconUrl()
-                : guild.getIconUrl();
         return new EmbedBuilder()
                 .setColor(brandColor(guild))
-                .setFooter(branding.getFooter(), icon)
+                .setFooter(get(guild).getBranding().getFooter(), logoUrl(guild))
                 .setTimestamp(Instant.now());
     }
 

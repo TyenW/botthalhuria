@@ -25,7 +25,7 @@ class TemplateValidationTest {
     @Test
     void projectTemplateUsesNewFeatures() {
         ServerTemplate template = ServerTemplate.load("server-template.json");
-        assertEquals("Thalhuria", template.getBranding().getName());
+        assertEquals("Thaluria", template.getBranding().getName());
         assertEquals("ROLE_MEMBER", template.getOnboarding().getVerifiedRoleKey());
         assertFalse(template.selfAssignableRoles().isEmpty());
         assertTrue(template.allChannels().anyMatch(ChannelTemplate::isJoinToCreate));

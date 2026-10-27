@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Template de servidor do Bot Thalhuria",
+  "title": "Template de servidor do Bot Thaluria",
   "description": "Estrutura completa do servidor: cargos, categorias, canais, painéis e recursos automáticos. Veja docs/TEMPLATE.md.",
   "type": "object",
   "additionalProperties": false,

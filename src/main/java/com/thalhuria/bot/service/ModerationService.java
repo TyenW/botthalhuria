@@ -2,6 +2,7 @@ package com.thalhuria.bot.service;
 
 import com.thalhuria.bot.config.AutoModConfig;
 import com.thalhuria.bot.config.ModerationConfig;
+import com.thalhuria.bot.config.Palette;
 import com.thalhuria.bot.config.ServerTemplate;
 import com.thalhuria.bot.config.WarnThreshold;
 import com.thalhuria.bot.database.InfractionRepository;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.automod.AutoModResponse;
 import net.dv8tion.jda.api.entities.automod.AutoModRule;
+import net.dv8tion.jda.api.entities.automod.AutoModTriggerType;
 import net.dv8tion.jda.api.entities.automod.build.AutoModRuleData;
 import net.dv8tion.jda.api.entities.automod.build.TriggerConfig;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
@@ -66,7 +68,7 @@ public class ModerationService {
         int active = infractions.countActiveWarnings(guild.getId(), target.getId(), config.getWarningExpiryDays());
 
         notifyUser(target.getUser(), guild, "⚠️ Advertência", reason, active);
-        modLog.send(guild, action("⚠️ Advertência #" + id, new Color(0xF59E0B), target.getUser(), moderator, reason)
+        modLog.send(guild, action("⚠️ Advertência #" + id, Palette.RUBY, target.getUser(), moderator, reason)
                 .addField("Advertências ativas", String.valueOf(active), true).build());
 
         String auto = applyThreshold(guild, target, active);
@@ -83,7 +85,7 @@ public class ModerationService {
         target.timeoutFor(Duration.ofMinutes(minutes)).reason(reason).complete();
         long id = infractions.add(guild.getId(), target.getId(), moderator.getId(), "TIMEOUT", minutes + " min • " + reason);
         notifyUser(target.getUser(), guild, "🔇 Castigo de " + minutes + " minuto(s)", reason, -1);
-        modLog.send(guild, action("🔇 Castigo #" + id, new Color(0xF97316), target.getUser(), moderator, reason)
+        modLog.send(guild, action("🔇 Castigo #" + id, Palette.RUBY, target.getUser(), moderator, reason)
                 .addField("Duração", minutes + " min", true).build());
         return templateService.msg(guild, "mod.timeout.ok", "user", target.getAsMention(), "minutes", minutes);
     }
@@ -103,7 +105,7 @@ public class ModerationService {
         notifyUser(target.getUser(), guild, "👢 Você foi expulso(a)", reason, -1);
         target.kick().reason(reason).complete();
         long id = infractions.add(guild.getId(), target.getId(), moderator.getId(), "KICK", reason);
-        modLog.send(guild, action("👢 Expulsão #" + id, new Color(0xEF4444), target.getUser(), moderator, reason).build());
+        modLog.send(guild, action("👢 Expulsão #" + id, Palette.RUBY, target.getUser(), moderator, reason).build());
         return templateService.msg(guild, "mod.kick.ok", "user", target.getUser().getName());
     }
 
@@ -117,7 +119,7 @@ public class ModerationService {
         }
         guild.ban(target, Math.max(0, Math.min(7, deleteDays)), TimeUnit.DAYS).reason(reason).complete();
         long id = infractions.add(guild.getId(), target.getId(), moderator.getId(), "BAN", reason);
-        modLog.send(guild, action("🔨 Banimento #" + id, new Color(0x991B1B), target, moderator, reason).build());
+        modLog.send(guild, action("🔨 Banimento #" + id, Palette.IMPERIAL, target, moderator, reason).build());
         return templateService.msg(guild, "mod.ban.ok", "user", target.getName());
     }
 
@@ -194,19 +196,19 @@ public class ModerationService {
                 case "TIMEOUT" -> {
                     target.timeoutFor(Duration.ofMinutes(threshold.get().getDurationMinutes())).reason(reason).complete();
                     infractions.add(guild.getId(), target.getId(), self.getId(), "TIMEOUT", threshold.get().getDurationMinutes() + " min • " + reason);
-                    modLog.send(guild, action("🤖 Castigo automático", new Color(0xF97316), target.getUser(), self, reason).build());
+                    modLog.send(guild, action("🤖 Castigo automático", Palette.RUBY, target.getUser(), self, reason).build());
                     return templateService.msg(guild, "mod.auto.timeout", "minutes", threshold.get().getDurationMinutes());
                 }
                 case "KICK" -> {
                     target.kick().reason(reason).complete();
                     infractions.add(guild.getId(), target.getId(), self.getId(), "KICK", reason);
-                    modLog.send(guild, action("🤖 Expulsão automática", new Color(0xEF4444), target.getUser(), self, reason).build());
+                    modLog.send(guild, action("🤖 Expulsão automática", Palette.RUBY, target.getUser(), self, reason).build());
                     return templateService.msg(guild, "mod.auto.kick");
                 }
                 case "BAN" -> {
                     guild.ban(target, 0, TimeUnit.DAYS).reason(reason).complete();
                     infractions.add(guild.getId(), target.getId(), self.getId(), "BAN", reason);
-                    modLog.send(guild, action("🤖 Banimento automático", new Color(0x991B1B), target.getUser(), self, reason).build());
+                    modLog.send(guild, action("🤖 Banimento automático", Palette.IMPERIAL, target.getUser(), self, reason).build());
                     return templateService.msg(guild, "mod.auto.ban");
                 }
                 default -> {
@@ -226,55 +228,96 @@ public class ModerationService {
      *
      * @return quantidade de regras ativas criadas
      */
+    /**
+     * Atualiza as regras no lugar em vez de apagar e recriar: em servidores Comunidade o Discord não deixa
+     * apagar a regra de menções em massa, e só aceita uma regra de cada tipo de spam por servidor.
+     * Regras do bot que saíram do template são apagadas; se o Discord recusar, ficam desativadas.
+     */
     public int syncAutoMod(Guild guild, ServerTemplate template) {
         AutoModConfig config = template.getModeration().getAutomod();
-        List<AutoModRule> existing = guild.retrieveAutoModRules().complete();
-        for (AutoModRule rule : existing) {
-            if (rule.getName().startsWith(AUTOMOD_PREFIX)) {
-                rule.getGuild().deleteAutoModRuleById(rule.getId()).complete();
+        List<AutoModRule> leftovers = new ArrayList<>();
+        List<AutoModRule> others = new ArrayList<>();
+        for (AutoModRule rule : guild.retrieveAutoModRules().complete()) {
+            (rule.getName().startsWith(AUTOMOD_PREFIX) ? leftovers : others).add(rule);
+        }
+
+        int synced = 0;
+        if (config.isEnabled()) {
+            List<Role> exempt = new ArrayList<>();
+            for (String key : config.getExemptRoleKeys()) templateService.role(guild, key).ifPresent(exempt::add);
+            Optional<GuildMessageChannel> alert = templateService.messageChannel(guild, template.getModeration().getModLogChannelKey());
+
+            if (!config.getBlockedWords().isEmpty()) {
+                synced += upsert(guild, leftovers, others, "Palavras proibidas", TriggerConfig.keywordFilter(config.getBlockedWords()), config, exempt, alert, true);
+            }
+            if (config.isBlockInvites()) {
+                synced += upsert(guild, leftovers, others, "Convites de outros servidores", TriggerConfig.patternFilter(INVITE_PATTERN), config, exempt, alert, true);
+            }
+            if (config.getMentionLimit() > 0) {
+                synced += upsert(guild, leftovers, others, "Menções em massa",
+                        TriggerConfig.mentionSpam(config.getMentionLimit()).setMentionRaidProtectionEnabled(true), config, exempt, alert, true);
+            }
+            if (config.isAntiSpam()) {
+                // O Discord não permite castigo automático em regras de spam
+                synced += upsert(guild, leftovers, others, "Spam", TriggerConfig.antiSpam(), config, exempt, alert, false);
             }
         }
-        if (!config.isEnabled()) return 0;
 
-        List<Role> exempt = new ArrayList<>();
-        for (String key : config.getExemptRoleKeys()) templateService.role(guild, key).ifPresent(exempt::add);
-        Optional<GuildMessageChannel> alert = templateService.messageChannel(guild, template.getModeration().getModLogChannelKey());
-
-        int created = 0;
-        if (!config.getBlockedWords().isEmpty()) {
-            created += create(guild, "Palavras proibidas", TriggerConfig.keywordFilter(config.getBlockedWords()), config, exempt, alert, true);
+        for (AutoModRule rule : leftovers) {
+            try {
+                rule.delete().complete();
+            } catch (Exception e) {
+                try {
+                    rule.getManager().setEnabled(false).complete();
+                    LOGGER.info("Regra de AutoMod '{}' não pode ser apagada; foi desativada", rule.getName());
+                } catch (Exception ignored) {
+                    LOGGER.warn("Não foi possível remover a regra de AutoMod '{}': {}", rule.getName(), e.getMessage());
+                }
+            }
         }
-        if (config.isBlockInvites()) {
-            created += create(guild, "Convites de outros servidores", TriggerConfig.patternFilter(INVITE_PATTERN), config, exempt, alert, true);
-        }
-        if (config.getMentionLimit() > 0) {
-            created += create(guild, "Menções em massa",
-                    TriggerConfig.mentionSpam(config.getMentionLimit()).setMentionRaidProtectionEnabled(true), config, exempt, alert, true);
-        }
-        if (config.isAntiSpam()) {
-            // O Discord não permite castigo automático em regras de spam
-            created += create(guild, "Spam", TriggerConfig.antiSpam(), config, exempt, alert, false);
-        }
-        LOGGER.info("AutoMod sincronizado em {}: {} regra(s)", guild.getName(), created);
-        return created;
+        LOGGER.info("AutoMod sincronizado em {}: {} regra(s)", guild.getName(), synced);
+        return synced;
     }
 
-    private int create(Guild guild, String name, TriggerConfig trigger, AutoModConfig config, List<Role> exempt,
-                       Optional<GuildMessageChannel> alert, boolean allowTimeout) {
+    /**
+     * Reaproveita a regra do bot com o mesmo nome ou, para os tipos únicos por servidor (menções e spam),
+     * qualquer regra desse tipo — inclusive a criada pelo Discord ao ativar a Comunidade. Sem nenhuma, cria.
+     */
+    private int upsert(Guild guild, List<AutoModRule> leftovers, List<AutoModRule> others, String name, TriggerConfig trigger,
+                       AutoModConfig config, List<Role> exempt, Optional<GuildMessageChannel> alert, boolean allowTimeout) {
         List<AutoModResponse> responses = new ArrayList<>();
         responses.add(AutoModResponse.blockMessage(truncate(config.getBlockMessage(), AutoModResponse.MAX_CUSTOM_MESSAGE_LENGTH)));
         alert.ifPresent(ch -> responses.add(AutoModResponse.sendAlert(ch)));
         if (allowTimeout && config.getTimeoutMinutes() > 0) {
             responses.add(AutoModResponse.timeoutMember(Duration.ofMinutes(config.getTimeoutMinutes())));
         }
+
+        boolean singleton = trigger.getType() == AutoModTriggerType.MENTION_SPAM || trigger.getType() == AutoModTriggerType.SPAM;
+        AutoModRule match = leftovers.stream().filter(r -> r.getName().equals(AUTOMOD_PREFIX + name)).findFirst()
+                .or(() -> singleton
+                        ? java.util.stream.Stream.concat(leftovers.stream(), others.stream()).filter(r -> r.getTriggerType() == trigger.getType()).findFirst()
+                        : Optional.empty())
+                .orElse(null);
         try {
-            guild.createAutoModRule(AutoModRuleData.onMessage(AUTOMOD_PREFIX + name, trigger)
-                    .setResponses(responses)
-                    .setExemptRoles(exempt)
-                    .setEnabled(true)).complete();
+            if (match != null) {
+                leftovers.remove(match);
+                others.remove(match);
+                match.getManager()
+                        .setName(AUTOMOD_PREFIX + name)
+                        .setTriggerConfig(trigger)
+                        .setResponses(responses)
+                        .setExemptRoles(exempt)
+                        .setEnabled(true)
+                        .complete();
+            } else {
+                guild.createAutoModRule(AutoModRuleData.onMessage(AUTOMOD_PREFIX + name, trigger)
+                        .setResponses(responses)
+                        .setExemptRoles(exempt)
+                        .setEnabled(true)).complete();
+            }
             return 1;
         } catch (Exception e) {
-            LOGGER.warn("Não foi possível criar a regra de AutoMod '{}': {}", name, e.getMessage());
+            LOGGER.warn("Não foi possível sincronizar a regra de AutoMod '{}': {}", name, e.getMessage());
             return 0;
         }
     }

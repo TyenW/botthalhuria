@@ -6,7 +6,7 @@ package com.thalhuria.bot.config;
 public class BrandingConfig {
     private String name = "Thaluria";
     private String tagline = "";
-    private String colorHex = "#E3B55B";
+    private String colorHex = Palette.GOLD_HEX;
     private String footer = "Thaluria";
     private String iconUrl;
     private String bannerUrl;

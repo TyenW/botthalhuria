@@ -1,5 +1,6 @@
 package com.thalhuria.bot.service;
 
+import com.thalhuria.bot.config.Palette;
 import com.thalhuria.bot.config.TicketConfig;
 import com.thalhuria.bot.config.TicketType;
 import com.thalhuria.bot.database.ServerMapRepository;
@@ -155,7 +156,7 @@ public class TicketService {
     private void deliverTranscript(Guild guild, TextChannel channel, String ownerId, Member closer, byte[] transcript, boolean dm) {
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle("🔒 Ticket Fechado")
-                .setColor(AuditLogService.COLOR_WARNING)
+                .setColor(Palette.RUBY)
                 .addField("Ticket", "#" + channel.getName(), true)
                 .addField("Aberto por", "<@" + ownerId + ">", true)
                 .addField("Fechado por", closer.getAsMention(), true)

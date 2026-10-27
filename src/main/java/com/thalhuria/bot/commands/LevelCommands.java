@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import com.thalhuria.bot.config.LevelReward;
+import com.thalhuria.bot.config.Palette;
 import com.thalhuria.bot.config.RoleTemplate;
 import com.thalhuria.bot.config.ServerTemplate;
 import com.thalhuria.bot.config.WelcomeCardConfig;
@@ -137,7 +138,7 @@ public class LevelCommands implements SlashCommandHandler {
                 target.getEffectiveName(), target.getUser().getEffectiveAvatarUrl(), title,
                 s.level(), position, progress, needed, s.xp(), s.messages(), s.voiceMinutes(),
                 economy ? s.coins() : null, economyService.config(guild).getCurrencyName(), next,
-                accent, TemplateService.parseColor(card.getBackgroundColorHex(), new Color(0x2A0A0F)),
+                accent, TemplateService.parseColor(card.getBackgroundColorHex(), Palette.CRIMSON),
                 card.getBackgroundImageUrl(), target.getIdLong());
     }
 
@@ -254,7 +255,7 @@ public class LevelCommands implements SlashCommandHandler {
         List<LeaderboardRenderer.Row> rows = board.entries().stream().map(e -> row(guild, e, board.best())).toList();
         LeaderboardRenderer.Row self = board.self() != null ? row(guild, board.self(), board.best()) : null;
         return leaderboardRenderer.render(board.label(), board.title(), rows, self,
-                templateService.brandColor(guild), TemplateService.parseColor(card.getBackgroundColorHex(), new Color(0x2A0A0F)),
+                templateService.brandColor(guild), TemplateService.parseColor(card.getBackgroundColorHex(), Palette.CRIMSON),
                 card.getBackgroundImageUrl(), guild.getIdLong());
     }
 

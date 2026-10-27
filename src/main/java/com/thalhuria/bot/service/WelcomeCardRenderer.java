@@ -1,5 +1,6 @@
 package com.thalhuria.bot.service;
 
+import com.thalhuria.bot.config.Palette;
 import com.thalhuria.bot.config.WelcomeCardConfig;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ public class WelcomeCardRenderer {
     }
 
     /**
-     * @param footer texto pequeno no canto inferior direito (ex.: "THALHURIA • 1.234 HABITANTES"); null para omitir
+     * @param footer texto pequeno no canto inferior direito (ex.: "THALURIA • 1.234 HABITANTES"); null para omitir
      * @param seed   semente das partículas do fundo (use o ID do membro para cada cartão ser único)
      */
     public byte[] render(WelcomeCardConfig config, Color brand, String avatarUrl, String username,
@@ -30,29 +31,31 @@ public class WelcomeCardRenderer {
         BufferedImage img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = CardStyle.setup(img);
 
-        Color base = TemplateService.parseColor(config.getBackgroundColorHex(), new Color(0x2A0A0F));
+        Color base = TemplateService.parseColor(config.getBackgroundColorHex(), Palette.CRIMSON);
         Color accent = TemplateService.parseColor(config.getAccentColorHex(), brand);
         CardStyle.background(g, WIDTH, HEIGHT, base, accent, CardStyle.download(config.getBackgroundImageUrl()), seed);
 
-        // Avatar
+        // Avatar (anel e runas sempre no ouro de Thaluria, como o círculo de símbolos da logo)
         int size = 250;
         int ax = 85;
         int ay = (HEIGHT - size) / 2;
-        CardStyle.runeRing(g, ax + size / 2f, ay + size / 2f, size / 2f + 44, accent, seed);
-        CardStyle.avatar(g, CardStyle.download(avatarUrl), ax, ay, size, accent, base.brighter());
+        CardStyle.runeRing(g, ax + size / 2f, ay + size / 2f, size / 2f + 44, Palette.GOLD, seed);
+        CardStyle.avatar(g, CardStyle.download(avatarUrl), ax, ay, size, Palette.GOLD, base.brighter());
 
         // Bloco de texto
         int tx = ax + size + 75;
         int maxWidth = WIDTH - tx - 70;
 
-        Font titleFont = CardStyle.font(Font.BOLD, 26);
+        Font titleFont = CardStyle.titleFont(28);
         String cleanTitle = CardStyle.printable(title, titleFont).toUpperCase();
-        CardStyle.spaced(g, cleanTitle, tx, 135, titleFont, CardStyle.mix(accent, Color.WHITE, 0.55f), 4.5f);
+        // Cinzel é larga: desconta o espaçamento entre letras ao encaixar o título
+        titleFont = CardStyle.fit(g, cleanTitle, titleFont, maxWidth - Math.round(3.5f * cleanTitle.length()), 18);
+        CardStyle.spaced(g, cleanTitle, tx, 135, titleFont, accent, 3.5f);
 
         Font nameFont = CardStyle.font(Font.BOLD, 78);
         String name = CardStyle.printable(username, nameFont);
         nameFont = CardStyle.fit(g, name, nameFont, maxWidth);
-        CardStyle.goldText(g, name, tx, 220, nameFont, accent);
+        CardStyle.goldText(g, name, tx, 220, nameFont, Palette.PARCHMENT);
 
         // Sublinhado em degradê com o tamanho do nome (mínimo 160px)
         int underline = Math.max(160, Math.min(maxWidth, g.getFontMetrics(nameFont).stringWidth(name)));
@@ -62,13 +65,13 @@ public class WelcomeCardRenderer {
         // Selo com o subtítulo
         Font pillFont = CardStyle.font(Font.BOLD, 28);
         String cleanSubtitle = CardStyle.printable(subtitle, pillFont);
-        CardStyle.pill(g, cleanSubtitle, tx, 275, pillFont, CardStyle.withAlpha(new Color(0xB3141F), 200), CardStyle.mix(accent, Color.WHITE, 0.6f));
+        CardStyle.pill(g, cleanSubtitle, tx, 275, pillFont, CardStyle.withAlpha(Palette.RUBY, 220), Palette.PARCHMENT);
 
         if (footer != null && !footer.isBlank()) {
-            Font footerFont = CardStyle.font(Font.BOLD, 18);
+            Font footerFont = CardStyle.titleFont(18);
             String cleanFooter = CardStyle.printable(footer, footerFont).toUpperCase();
             int width = g.getFontMetrics(footerFont).stringWidth(cleanFooter) + cleanFooter.length() * 2;
-            CardStyle.spaced(g, cleanFooter, WIDTH - width - 45, HEIGHT - 32, footerFont, new Color(255, 255, 255, 150), 2f);
+            CardStyle.spaced(g, cleanFooter, WIDTH - width - 45, HEIGHT - 32, footerFont, CardStyle.withAlpha(Palette.PARCHMENT, 170), 2f);
         }
 
         g.dispose();

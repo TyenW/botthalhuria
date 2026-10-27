@@ -257,6 +257,13 @@ public class ServerTemplate {
         }
         checkColor(problems, "branding.colorHex", branding.getColorHex());
 
+        Set<String> ticketTypes = new HashSet<>();
+        for (TicketType type : tickets.getTypes()) {
+            if (isBlank(type.getKey()) || isBlank(type.getLabel())) problems.add("tickets.types: tipo sem key ou label");
+            else if (!ticketTypes.add(type.getKey().toLowerCase())) problems.add("tickets.types: key repetida '" + type.getKey() + "'");
+            for (String key : type.getStaffRoleKeys()) checkRef(problems, "tickets.types[" + type.getKey() + "].staffRoleKeys", key, roleKeys);
+        }
+
         for (ChannelTemplate chan : allChannels().toList()) {
             if (chan.getPanel() == null) continue;
             for (PanelButton button : chan.getPanel().getButtons()) {
@@ -271,13 +278,6 @@ public class ServerTemplate {
 
         long owners = roles.stream().filter(RoleTemplate::isOwnerRole).count();
         if (owners > 1) problems.add("Apenas 1 cargo pode ter ownerRole=true");
-
-        Set<String> ticketTypes = new HashSet<>();
-        for (TicketType type : tickets.getTypes()) {
-            if (isBlank(type.getKey()) || isBlank(type.getLabel())) problems.add("tickets.types: tipo sem key ou label");
-            else if (!ticketTypes.add(type.getKey().toLowerCase())) problems.add("tickets.types: key repetida '" + type.getKey() + "'");
-            for (String key : type.getStaffRoleKeys()) checkRef(problems, "tickets.types[" + type.getKey() + "].staffRoleKeys", key, roleKeys);
-        }
 
         if (leveling.isEnabled()) {
             checkRef(problems, "leveling.announceChannelKey", leveling.getAnnounceChannelKey(), channelKeys);

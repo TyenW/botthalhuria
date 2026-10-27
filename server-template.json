@@ -6,7 +6,7 @@
   "branding": {
     "name": "Thaluria",
     "tagline": "Onde a resenha encontra o jogo.",
-    "colorHex": "#E3B55B",
+    "colorHex": "#D4AF6A",
     "footer": "Thaluria ✦ o reino da resenha",
     "iconUrl": null,
     "bannerUrl": null,
@@ -35,8 +35,8 @@
 
   "welcomeCard": {
     "enabled": true,
-    "backgroundColorHex": "#2A0A0F",
-    "accentColorHex": "#E3B55B",
+    "backgroundColorHex": "#4A0E0E",
+    "accentColorHex": "#D4AF6A",
     "backgroundImageUrl": null,
     "title": "Bem-vindo(a) ao reino de Thaluria",
     "subtitle": "Habitante nº {count}"
@@ -65,9 +65,9 @@
       {
         "key": "denuncia",
         "label": "Denúncia",
-        "emoji": "🚨",
+        "emoji": "🛡️",
         "description": "Alguém quebrou as regras? Conte aqui, em sigilo",
-        "channelPrefix": "🚨・",
+        "channelPrefix": "🛡️・",
         "staffRoleKeys": ["ROLE_MODERATOR"],
         "openMessage": "Olá {user}. Sua denúncia é **sigilosa** e só a moderação vê este canal.\n\nInforme: **quem**, **onde** (canal), **quando** e, se possível, **prints**."
       },
@@ -171,7 +171,7 @@
     {
       "key": "ROLE_OWNER",
       "name": "👑 Soberano de Thaluria",
-      "colorHex": "#FFD447",
+      "colorHex": "#010101",
       "hoist": true,
       "mentionable": false,
       "ownerRole": true,
@@ -180,7 +180,7 @@
     {
       "key": "ROLE_ADMIN",
       "name": "⚜️ Alto Conselho",
-      "colorHex": "#F2B33D",
+      "colorHex": "#D4AF6A",
       "hoist": true,
       "mentionable": true,
       "adminRole": true,
@@ -189,7 +189,7 @@
     {
       "key": "ROLE_MODERATOR",
       "name": "🛡️ Guardião Real",
-      "colorHex": "#D7263D",
+      "colorHex": "#990F0F",
       "hoist": true,
       "mentionable": true,
       "permissions": [
@@ -201,7 +201,7 @@
     {
       "key": "ROLE_SUPPORT",
       "name": "🧭 Guia do Reino",
-      "colorHex": "#E8743B",
+      "colorHex": "#B5502E",
       "hoist": true,
       "mentionable": true,
       "permissions": ["MESSAGE_MANAGE", "MANAGE_THREADS", "VOICE_MOVE_OTHERS", "MODERATE_MEMBERS"]
@@ -209,7 +209,7 @@
     {
       "key": "ROLE_EVENTS",
       "name": "🎪 Arauto dos Eventos",
-      "colorHex": "#F59E0B",
+      "colorHex": "#EED49F",
       "hoist": true,
       "mentionable": true,
       "permissions": ["MANAGE_EVENTS", "CREATE_SCHEDULED_EVENTS", "VOICE_MUTE_OTHERS", "VOICE_MOVE_OTHERS", "PRIORITY_SPEAKER"]
@@ -225,7 +225,7 @@
     {
       "key": "ROLE_VIP",
       "name": "💎 Mecenas",
-      "colorHex": "#FF6B6B",
+      "colorHex": "#E08A6A",
       "hoist": true,
       "mentionable": false,
       "permissions": ["MESSAGE_EXT_EMOJI", "MESSAGE_EXT_STICKER", "NICKNAME_CHANGE"]
@@ -250,14 +250,14 @@
     { "key": "ROLE_COLOR_SHADOW", "name": "🌑 Sombra", "colorHex": "#475569", "hoist": false, "mentionable": false, "permissions": [] },
     { "key": "ROLE_TITLE_BARD", "name": "🎻 Bardo Errante", "colorHex": "#C084FC", "hoist": false, "mentionable": false, "permissions": [] },
 
-    { "key": "ROLE_RECRUITER_3", "name": "🦅 Mestre dos Recrutas", "hoist": false, "mentionable": false, "permissions": [] },
-    { "key": "ROLE_RECRUITER_2", "name": "🏹 Batedor do Reino", "hoist": false, "mentionable": false, "permissions": [] },
-    { "key": "ROLE_RECRUITER_1", "name": "📯 Recrutador", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_RECRUITER_3", "name": "🦅 Mestre dos Recrutas", "colorHex": "#D4AF6A", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_RECRUITER_2", "name": "🏹 Batedor do Reino", "colorHex": "#A8A9AD", "hoist": false, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_RECRUITER_1", "name": "📯 Recrutador", "colorHex": "#8C583A", "hoist": false, "mentionable": false, "permissions": [] },
 
-    { "key": "ROLE_LVL_50", "name": "🐉 Lorde Dragão", "colorHex": "#FFD700", "hoist": true, "mentionable": false, "permissions": [] },
-    { "key": "ROLE_LVL_30", "name": "🏰 Barão", "colorHex": "#C1121F", "hoist": true, "mentionable": false, "permissions": [] },
-    { "key": "ROLE_LVL_15", "name": "⚔️ Cavaleiro", "colorHex": "#E85D04", "hoist": true, "mentionable": false, "permissions": [] },
-    { "key": "ROLE_LVL_5", "name": "🗡️ Escudeiro", "colorHex": "#E9A23B", "hoist": true, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_LVL_50", "name": "🐉 Lorde Dragão", "colorHex": "#C41E3A", "hoist": true, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_LVL_30", "name": "🏰 Barão", "colorHex": "#D4AF6A", "hoist": true, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_LVL_15", "name": "⚔️ Cavaleiro", "colorHex": "#A8A9AD", "hoist": true, "mentionable": false, "permissions": [] },
+    { "key": "ROLE_LVL_5", "name": "🗡️ Escudeiro", "colorHex": "#8C583A", "hoist": true, "mentionable": false, "permissions": [] },
 
     {
       "key": "ROLE_MEMBER",
@@ -356,7 +356,7 @@
             "type": "VERIFY",
             "title": "🗝️ Os Portões de Thaluria",
             "description": "Do outro lado deste portão estão a praça, as tavernas, os salões de voz e os eventos do reino.\n\n**Para entrar:**\n> 1. Leia as leis em {channel:CHAN_REGRAS}\n> 2. Clique no botão abaixo\n\nVocê se tornará {role:ROLE_MEMBER} e todo o reino será revelado. Ao entrar, você jura respeitar as leis.",
-            "colorHex": "#E3B55B",
+            "colorHex": "#D4AF6A",
             "buttonLabel": "Entrar no reino",
             "buttonEmoji": "🗝️"
           }
@@ -402,7 +402,7 @@
             "type": "EMBED",
             "title": "💎 Vantagens do Reino",
             "description": "Quem fortalece Thaluria ganha um tratamento especial.",
-            "colorHex": "#F2B33D",
+            "colorHex": "#D4AF6A",
             "fields": [
               { "name": "🚀 Server Boosters", "value": "Cargo {role:ROLE_VIP}, emojis e figurinhas externos e destaque na lista de membros.", "inline": true },
               { "name": "⚔️ Níveis", "value": "{role:ROLE_LVL_5} → {role:ROLE_LVL_15} → {role:ROLE_LVL_30} → {role:ROLE_LVL_50}", "inline": true },
@@ -526,16 +526,16 @@
             "type": "TICKET",
             "title": "🎫 Central de Atendimento",
             "description": "Escolha abaixo o assunto e um canal **privado** será criado só para você e a equipe certa.\n\nAo fechar, você recebe uma cópia da conversa na DM.",
-            "colorHex": "#C1121F",
+            "colorHex": "#D4AF6A",
             "fields": [
               { "name": "🧭 Suporte", "value": "Dúvidas, cargos e problemas com o bot.", "inline": true },
-              { "name": "🚨 Denúncia", "value": "Sigilosa, vista apenas pela guarda.", "inline": true },
+              { "name": "🛡️ Denúncia", "value": "Sigilosa, vista apenas pela guarda.", "inline": true },
               { "name": "🤝 Parceria", "value": "Propostas para o Alto Conselho.", "inline": true },
               { "name": "💡 Antes de abrir", "value": "Confira se a resposta já está em {channel:CHAN_FAQ}." }
             ],
             "buttons": [
               { "label": "Suporte", "emoji": "🧭", "style": "SECONDARY", "action": "TICKET", "ticketType": "suporte" },
-              { "label": "Denúncia", "emoji": "🚨", "style": "DANGER", "action": "TICKET", "ticketType": "denuncia" },
+              { "label": "Denúncia", "emoji": "🛡️", "style": "DANGER", "action": "TICKET", "ticketType": "denuncia" },
               { "label": "Parceria", "emoji": "🤝", "style": "SECONDARY", "action": "TICKET", "ticketType": "parceria" }
             ]
           }
@@ -563,7 +563,7 @@
             "type": "EMBED",
             "title": "🛡️ Guia Rápido da Staff",
             "description": "Tudo o que a equipe precisa saber sobre o bot.",
-            "colorHex": "#9B1B30",
+            "colorHex": "#8B1E1E",
             "fields": [
               { "name": "⚖️ Moderação", "value": "`/mod advertir` · `castigo` · `remover-castigo` · `expulsar` · `banir` · `limpar` · `historico` · `perdoar`\n3 advertências = castigo de 1h · 5 = 24h · 7 = ban (automático)." },
               { "name": "📅 Eventos", "value": "`/evento criar` cria o evento do Discord, anuncia em {channel:CHAN_EVENTS} marcando {role:ROLE_PING_EVENTS} e lembra 15 min antes." },

@@ -1,6 +1,7 @@
 package com.thalhuria.bot.listeners;
 
 import com.thalhuria.bot.config.ModerationConfig;
+import com.thalhuria.bot.config.Palette;
 import com.thalhuria.bot.service.ModLogService;
 import com.thalhuria.bot.service.TemplateService;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -37,8 +38,8 @@ import java.util.concurrent.TimeUnit;
 public class ModLogListener extends ListenerAdapter {
 
     private static final int CACHE_SIZE = 10_000;
-    private static final Color RED = new Color(0xEF4444);
-    private static final Color AMBER = new Color(0xF59E0B);
+    private static final Color RED = Palette.RUBY;
+    private static final Color AMBER = Palette.GOLD;
     private static final Color GREEN = new Color(0x22C55E);
     private static final Color SLATE = new Color(0x64748B);
 
@@ -129,7 +130,7 @@ public class ModLogListener extends ListenerAdapter {
         withAuditEntry(event.getGuild(), ActionType.BAN, event.getUser(), entry ->
                 modLog.send(event.getGuild(), new EmbedBuilder()
                         .setTitle("🔨 Membro banido")
-                        .setColor(new Color(0x991B1B))
+                        .setColor(Palette.IMPERIAL)
                         .setThumbnail(event.getUser().getEffectiveAvatarUrl())
                         .addField("Membro", event.getUser().getAsMention() + " (`" + event.getUser().getId() + "`)", true)
                         .addField("Por", entry.map(e -> "<@" + e.getUserId() + ">").orElse("Desconhecido"), true)

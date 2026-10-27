@@ -80,10 +80,10 @@ public class OnboardingService {
         Guild guild = member.getGuild();
         Map<String, String> vars = userVars(member);
         EmbedBuilder embed = templateService.brandedEmbed(guild)
-                .setAuthor(guild.getName(), null, guild.getIconUrl())
+                .setAuthor(guild.getName(), null, templateService.logoUrl(guild))
                 .setTitle(templateService.render(guild, config.getDmTitle(), vars))
                 .setDescription(templateService.render(guild, config.getDmMessage(), vars));
-        if (guild.getIconUrl() != null) embed.setThumbnail(guild.getIconUrl());
+        embed.setThumbnail(templateService.logoUrl(guild));
 
         var verify = templateService.channel(guild, config.getDmButtonChannelKey())
                 .or(() -> templateService.channel(guild, config.getWelcomeChannelKey()));

@@ -1,4 +1,4 @@
-# ✦ Bot Thalhuria
+# ✦ Bot Thaluria
 
 Bot de Discord em **Java 17+ / JDA 5** que constrói um servidor inteiro a partir de **um único arquivo JSON** e depois cuida da comunidade: recebe quem chega com um cartão personalizado, verifica, distribui cargos, conta XP e moedas, modera com AutoMod nativo, abre tickets com transcrição, cria salas de voz sob demanda, agenda eventos e registra tudo.
 
@@ -28,7 +28,7 @@ edite o JSON → /sync-server →  o Discord se ajusta (sem duplicar nada)
 ### 👑 Hierarquia de cargos
 | Grupo | Cargos |
 | :--- | :--- |
-| Dono | **👑 Soberano de Thalhuria** (dado automaticamente ao dono do servidor) |
+| Dono | **👑 Soberano de Thaluria** (dado automaticamente ao dono do servidor) |
 | Administração | **⚜️ Alto Conselho** |
 | Staff | 🛡️ Guardião Real (moderação) · 🧭 Guia do Reino (suporte) · 🎪 Arauto dos Eventos |
 | Especiais | 🤝 Embaixador (parceiros) · 💎 Mecenas (apoiadores/boosters) · ⚙️ Autômato (bots) |

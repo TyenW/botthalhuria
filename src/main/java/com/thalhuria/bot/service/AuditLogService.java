@@ -113,7 +113,7 @@ public class AuditLogService {
                     .addField("Cargos Processados", String.valueOf(rolesCount), true)
                     .addField("Categorias Processadas", String.valueOf(categoriesCount), true)
                     .addField("Canais Processados", String.valueOf(channelsCount), true)
-                    .setFooter("Bot Thalhuria • Sistema de Auditoria", guild.getJDA().getSelfUser().getEffectiveAvatarUrl())
+                    .setFooter("Bot Thaluria • Sistema de Auditoria", guild.getJDA().getSelfUser().getEffectiveAvatarUrl())
                     .setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embed.build()).queue(
@@ -133,7 +133,7 @@ public class AuditLogService {
                     .setColor(COLOR_DANGER)
                     .setDescription("Todos os canais, categorias e cargos gerenciados pelo Bot foram removidos.")
                     .addField("Administrador Responsável", admin.getAsMention() + " (`" + admin.getId() + "`)", false)
-                    .setFooter("Bot Thalhuria • Ambiente Resetado", guild.getJDA().getSelfUser().getEffectiveAvatarUrl())
+                    .setFooter("Bot Thaluria • Ambiente Resetado", guild.getJDA().getSelfUser().getEffectiveAvatarUrl())
                     .setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embed.build()).queue();

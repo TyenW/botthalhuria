@@ -145,7 +145,7 @@ public class MemberManagementService {
                         "Este é o seu canal de texto privado e seguro. Aqui você pode tirar dúvidas, " +
                         "receber orientações individuais ou interagir diretamente com a equipe administrativa.")
                 .addField("🔒 Privacidade", "Apenas você e os administradores possuem visibilidade deste canal.", false)
-                .setFooter("Sistema de Atendimento Privado • Bot Thalhuria", channel.getGuild().getJDA().getSelfUser().getEffectiveAvatarUrl())
+                .setFooter("Sistema de Atendimento Privado • Bot Thaluria", channel.getGuild().getJDA().getSelfUser().getEffectiveAvatarUrl())
                 .setTimestamp(Instant.now());
 
         String ping = targetMember.getAsMention() + (adminRole != null ? " " + adminRole.getAsMention() : "");

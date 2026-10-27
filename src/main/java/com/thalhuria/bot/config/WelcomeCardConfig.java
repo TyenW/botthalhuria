@@ -5,7 +5,7 @@ package com.thalhuria.bot.config;
  */
 public class WelcomeCardConfig {
     private boolean enabled = true;
-    private String backgroundColorHex = "#2A0A0F";
+    private String backgroundColorHex = Palette.CRIMSON_HEX;
     private String accentColorHex;
     private String backgroundImageUrl;
     private String title = "BEM-VINDO(A)";

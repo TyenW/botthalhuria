@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.3.0 — "Carmesim e Ouro" (2026-10-27)
+
+- **Identidade visual da logo**: paleta central em `Palette.java` — Carmesim `#4A0E0E`, Couro `#1E0707`, Ouro Thaluria `#D4AF6A`, Pergaminho `#EED49F` e Rubi `#8B1E1E`. Cor padrão dos embeds passa a ser o Ouro.
+- **Cartões redesenhados** (boas-vindas, `/rank`, `/top`): fundo em degradê radial carmesim com vinheta, moldura dupla dourada, barras vazias em couro, anel do avatar e runas sempre dourados, nomes e níveis em pergaminho, medalhas bronze → prata envelhecida → ouro.
+- **Fontes embutidas**: Cinzel (títulos e rótulos) e Inter (nomes e números) em `src/main/resources/fonts` (licença OFL) — o cartão fica igual no Windows e no Docker.
+- **Painéis**: sem `thumbnailUrl`, levam a logo (`branding.iconUrl` ou ícone do servidor); o mesmo vale para o painel das salas temporárias e as boas-vindas. Botões passam a ser `SECONDARY` por padrão (o azul `PRIMARY` destoa da logo).
+- **Moderação**: advertências, castigos, expulsões, mensagens apagadas e tickets fechados em Rubi; banimentos em Carmesim Imperial `#990F0F`.
+- **Cargos com a temperatura da logo**: 👑 Soberano em preto `#010101` (o único nome preto do servidor), demais staff de Ouro `#D4AF6A` a Carmesim Imperial; níveis e recrutadores sobem de bronze `#8C583A` → prata `#A8A9AD` → ouro `#D4AF6A` → rubi `#C41E3A`.
+- **Grafia "Thaluria"** em todos os textos visíveis (template embutido, rodapés, README e docs). O pacote Java segue `com.thalhuria.bot`.
+
 ## 4.2.0 — "Recrutamento" (2026-10-26)
 
 - **Rastreio de convites**: "Fulano entrou pelo convite de Ciclano" nas boas-vindas e no log; recompensa em Thalers quando o convidado se verifica; cargos 📯 Recrutador (3), 🏹 Batedor do Reino (10) e 🦅 Mestre dos Recrutas (25); `/convites ver` e `/convites ranking`. Proteções contra contas novas, reentradas e auto-convite.

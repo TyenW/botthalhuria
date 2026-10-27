@@ -69,10 +69,8 @@ public class EconomyService {
             if (current.lastDailyAt() > 0 && elapsed < DAILY_COOLDOWN) {
                 long next = current.lastDailyAt() + DAILY_COOLDOWN;
                 embed.setTitle(templateService.msg(guild, "economy.daily.wait.title"))
-                        .setDescription(templateService.msg(guild, "economy.daily.wait.description", "time", "<t:" + next + ":R>"))
-                        .addField(templateService.msg(guild, "economy.daily.streak.field"), streakTrack(current.dailyStreak()), false)
-                        .setFooter(templateService.msg(guild, "economy.daily.wait.footer", "time",
-                                formatDuration(DAILY_COOLDOWN - elapsed)), null);
+                        .setDescription(templateService.msg(guild, "economy.daily.wait.description", "time", "<t:" + next + ":R>")
+                                + "\n" + streakTrack(current.dailyStreak()));
                 return new DailyResult(embed.build(), false);
             }
 
@@ -93,37 +91,34 @@ public class EconomyService {
                     s.messages(), s.voiceMinutes(), s.coins(), s.lastXpAt(), now, newStreak));
             MemberStats after = activityService.grant(member, xp, total, null);
 
-            StringBuilder lines = new StringBuilder();
-            lines.append(templateService.msg(guild, "economy.daily.line.base", "amount", format(guild, base))).append('\n');
-            if (streakBonus > 0) lines.append(templateService.msg(guild, "economy.daily.line.streak", "amount", format(guild, streakBonus), "streak", streak)).append('\n');
-            if (weekly > 0) lines.append(templateService.msg(guild, "economy.daily.line.weekly", "amount", format(guild, weekly))).append('\n');
-            if (lucky) lines.append(templateService.msg(guild, "economy.daily.line.lucky", "amount", format(guild, luckyBonus),
-                    "multiplier", c.getDailyLuckyMultiplier())).append('\n');
-            if (xp > 0) lines.append(templateService.msg(guild, "economy.daily.line.xp", "xp", xp)).append('\n');
-            lines.append('\n').append(templateService.msg(guild, "economy.daily.line.total", "amount", format(guild, total)));
+            // Ganho em uma linha, bônus em letra miúda, trilha da semana e saldo
+            String gain = templateService.msg(guild, "economy.daily.gain", "amount", format(guild, total))
+                    + (xp > 0 ? " · " + templateService.msg(guild, "economy.daily.xp", "xp", xp) : "");
+            List<String> bonuses = new ArrayList<>();
+            if (streakBonus > 0) bonuses.add(templateService.msg(guild, "economy.daily.bonus.streak", "amount", format(guild, streakBonus)));
+            if (weekly > 0) bonuses.add(templateService.msg(guild, "economy.daily.bonus.weekly", "amount", format(guild, weekly)));
+            if (lucky) bonuses.add(templateService.msg(guild, "economy.daily.bonus.lucky", "multiplier", c.getDailyLuckyMultiplier()));
+
+            StringBuilder text = new StringBuilder();
+            if (broken) text.append(templateService.msg(guild, "economy.daily.broken", "streak", current.dailyStreak())).append('\n');
+            text.append(gain).append('\n');
+            if (!bonuses.isEmpty()) text.append("-# ").append(String.join(" · ", bonuses)).append('\n');
+            text.append(streakTrack(streak)).append('\n')
+                    .append(templateService.msg(guild, "economy.daily.status",
+                            "balance", format(guild, after.coins()), "time", "<t:" + (now + DAILY_COOLDOWN) + ":R>"));
 
             embed.setTitle(templateService.msg(guild, lucky ? "economy.daily.title.lucky" : "economy.daily.title"))
-                    .setDescription((broken ? templateService.msg(guild, "economy.daily.broken", "streak", current.dailyStreak()) + "\n\n" : "")
-                            + lines)
-                    .addField(templateService.msg(guild, "economy.daily.streak.field"), streakTrack(streak), false)
-                    .addField(templateService.msg(guild, "economy.daily.balance.field"), format(guild, after.coins()), true)
-                    .addField(templateService.msg(guild, "economy.daily.next.field"), "<t:" + (now + DAILY_COOLDOWN) + ":R>", true)
-                    .setFooter(templateService.msg(guild, "economy.daily.footer",
-                            "days", 7 - (streak % 7 == 0 ? 7 : streak % 7)), null);
+                    .setDescription(text);
             return new DailyResult(embed.build(), true);
         }
     }
 
-    /** "🔥🔥🔥⬛⬛⬛⬛  Dia 3 de 7" — a trilha recomeça a cada semana completa. */
+    /** "🔥🔥🔥⬛⬛⬛🎁 3 dias" — a trilha recomeça a cada semana completa. */
     static String streakTrack(int streak) {
         int inWeek = streak <= 0 ? 0 : ((streak - 1) % 7) + 1;
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= 7; i++) sb.append(i <= inWeek ? (i == 7 ? "👑" : "🔥") : (i == 7 ? "🎁" : "⬛"));
-        return sb + "  **" + streak + "** dia(s) seguidos";
-    }
-
-    private static String formatDuration(long seconds) {
-        return (seconds / 3600) + "h" + String.format("%02d", (seconds % 3600) / 60) + "min";
+        return sb + " **" + streak + "** " + (streak == 1 ? "dia" : "dias");
     }
 
     /**

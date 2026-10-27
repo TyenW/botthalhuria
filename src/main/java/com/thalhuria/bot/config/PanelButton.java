@@ -2,11 +2,12 @@ package com.thalhuria.bot.config;
 
 /**
  * Botão de um painel. Ações: TICKET, VERIFY, ROLE (alterna um cargo) ou URL (link).
+ * O estilo padrão é SECONDARY (cinza escuro): o PRIMARY azul do Discord destoa do carmesim e dourado de Thaluria.
  */
 public class PanelButton {
     private String label;
     private String emoji;
-    private String style = "PRIMARY";
+    private String style = "SECONDARY";
     private String action = "TICKET";
     private String ticketType;
     private String roleKey;

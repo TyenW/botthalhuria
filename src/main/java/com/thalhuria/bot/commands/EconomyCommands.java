@@ -62,7 +62,10 @@ public class EconomyCommands implements SlashCommandHandler {
         if (guild == null || member == null) return;
 
         switch (event.getName()) {
-            case "daily" -> event.reply(economyService.daily(member)).queue();
+            case "daily" -> {
+                var result = economyService.daily(member);
+                event.replyEmbeds(result.embed()).setEphemeral(!result.claimed()).queue();
+            }
             case "saldo" -> {
                 Member target = event.getOption("usuario", member, o -> o.getAsMember());
                 if (target == null) target = member;

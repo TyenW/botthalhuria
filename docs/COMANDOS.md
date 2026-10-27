@@ -1,4 +1,4 @@
-# 📖 Comandos do Bot Thalhuria
+# 📖 Comandos do Bot Thaluria
 
 Todos os comandos são **slash** (digite `/` no Discord). Os comandos de staff só aparecem no menu para quem tem a permissão indicada; as ações sensíveis conferem a permissão de novo na hora de executar.
 
@@ -109,7 +109,7 @@ Não são comandos: são interações nos painéis que o bot publica.
 | :--- | :--- | :--- |
 | ✅・verificação | **🗝️ Entrar no reino** | Troca 🌱 Viajante por ✨ Cidadão e libera o servidor. Também libera a recompensa de quem te convidou. |
 | 🎭・cargos | Menu **Selecione seus cargos** | Marca/desmarca interesses e notificações (🔔 🎉 🎮 🎨 🎵 🎬). |
-| 🎫・abrir-ticket | **🧭 Suporte · 🚨 Denúncia · 🤝 Parceria** | Abre um canal privado com a equipe certa. |
+| 🎫・abrir-ticket | **🧭 Suporte · 🛡️ Denúncia · 🤝 Parceria** | Abre um canal privado com a equipe certa. |
 | Dentro do ticket | **🔒 Fechar ticket** | Fecha (dono do ticket ou staff); a transcrição HTML vai para os logs e para a DM de quem abriu. |
 | `/loja` | Menu de itens | Compra o item escolhido. |
 | Chat da sua sala temporária | **🔒 Trancar · 👁️ Ocultar · ✏️ Renomear · 👥 Limite · 👑 Transferir** | Controla a sua sala (só o dono). |

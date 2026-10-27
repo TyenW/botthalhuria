@@ -103,7 +103,9 @@ public class PanelService {
         }
 
         if (panel.getImageUrl() != null && !panel.getImageUrl().isBlank()) embed.setImage(panel.getImageUrl());
+        // Sem thumbnail própria, o painel leva a logo do reino
         if (panel.getThumbnailUrl() != null && !panel.getThumbnailUrl().isBlank()) embed.setThumbnail(panel.getThumbnailUrl());
+        else embed.setThumbnail(templateService.logoUrl(guild));
 
         // Painel de cargos: listar as opções no próprio embed
         if ("SELF_ROLES".equalsIgnoreCase(panel.getType())) {
@@ -139,7 +141,7 @@ public class PanelService {
             case "VERIFY" -> rows.add(ActionRow.of(withEmoji(
                     Button.success(VERIFY_BUTTON_ID, orDefault(panel.getButtonLabel(), "Verificar")), panel.getButtonEmoji())));
             case "TICKET" -> rows.add(ActionRow.of(withEmoji(
-                    Button.primary(TICKET_OPEN_BUTTON_ID, orDefault(panel.getButtonLabel(), "Abrir ticket")), panel.getButtonEmoji())));
+                    Button.secondary(TICKET_OPEN_BUTTON_ID, orDefault(panel.getButtonLabel(), "Abrir ticket")), panel.getButtonEmoji())));
             case "SELF_ROLES" -> {
                 List<SelectOption> options = new ArrayList<>();
                 for (RoleTemplate role : template.selfAssignableRoles()) {
@@ -178,11 +180,11 @@ public class PanelService {
             default -> null;
         };
         if (id == null) return null;
-        ButtonStyle style = "URL".equals(action) ? ButtonStyle.LINK : switch (cfg.getStyle() == null ? "PRIMARY" : cfg.getStyle().toUpperCase()) {
-            case "SECONDARY" -> ButtonStyle.SECONDARY;
+        ButtonStyle style = "URL".equals(action) ? ButtonStyle.LINK : switch (cfg.getStyle() == null ? "SECONDARY" : cfg.getStyle().toUpperCase()) {
+            case "PRIMARY" -> ButtonStyle.PRIMARY;
             case "SUCCESS" -> ButtonStyle.SUCCESS;
             case "DANGER" -> ButtonStyle.DANGER;
-            default -> ButtonStyle.PRIMARY;
+            default -> ButtonStyle.SECONDARY;
         };
         return Button.of(style, id, label, emoji);
     }

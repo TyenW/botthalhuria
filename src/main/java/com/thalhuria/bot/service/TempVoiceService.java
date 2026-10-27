@@ -108,7 +108,8 @@ public class TempVoiceService {
         Guild guild = channel.getGuild();
         EmbedBuilder embed = templateService.brandedEmbed(guild)
                 .setTitle(templateService.msg(guild, "tempvoice.panel.title"))
-                .setDescription(templateService.msg(guild, "tempvoice.panel.description", "user", owner.getAsMention()));
+                .setDescription(templateService.msg(guild, "tempvoice.panel.description", "user", owner.getAsMention()))
+                .setThumbnail(templateService.logoUrl(guild));
         channel.sendMessageEmbeds(embed.build())
                 .setComponents(
                         ActionRow.of(
@@ -117,7 +118,7 @@ public class TempVoiceService {
                                 Button.secondary(BTN_RENAME, "Renomear").withEmoji(Emoji.fromUnicode("✏️"))),
                         ActionRow.of(
                                 Button.secondary(BTN_LIMIT, "Limite").withEmoji(Emoji.fromUnicode("👥")),
-                                Button.primary(BTN_TRANSFER, "Transferir dono").withEmoji(Emoji.fromUnicode("👑"))))
+                                Button.secondary(BTN_TRANSFER, "Transferir dono").withEmoji(Emoji.fromUnicode("👑"))))
                 .queue(null, err -> LOGGER.debug("Não foi possível enviar o painel da sala: {}", err.getMessage()));
     }
 

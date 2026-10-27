@@ -1,5 +1,7 @@
 package com.thalhuria.bot.service;
 
+import com.thalhuria.bot.config.Palette;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
@@ -20,9 +22,9 @@ public class LeaderboardRenderer {
     private static final int GAP = 10;
     private static final int PAD = 40;
 
-    private static final Color GOLD = new Color(0xF5C451);
-    private static final Color SILVER = new Color(0xC7D2E0);
-    private static final Color BRONZE = new Color(0xD08A5A);
+    private static final Color GOLD = Palette.GOLD;
+    private static final Color SILVER = Palette.SILVER;
+    private static final Color BRONZE = Palette.BRONZE;
 
     public record Row(int position, String name, String avatarUrl, String value, String detail, double ratio) {}
 
@@ -43,13 +45,12 @@ public class LeaderboardRenderer {
         CardStyle.background(g, WIDTH, height, background, accent, bgImage, seed);
 
         // Cabeçalho
-        Font labelFont = CardStyle.font(Font.BOLD, 22);
-        CardStyle.spaced(g, CardStyle.printable(label, labelFont).toUpperCase(), PAD, 62, labelFont,
-                CardStyle.mix(accent, Color.WHITE, 0.55f), 4f);
-        Font titleFont = CardStyle.font(Font.BOLD, 52);
+        Font labelFont = CardStyle.titleFont(22);
+        CardStyle.spaced(g, CardStyle.printable(label, labelFont).toUpperCase(), PAD, 62, labelFont, accent, 4f);
+        Font titleFont = CardStyle.titleFont(52);
         String cleanTitle = CardStyle.printable(title, titleFont);
         titleFont = CardStyle.fit(g, cleanTitle, titleFont, WIDTH - PAD * 2, 30);
-        CardStyle.goldText(g, CardStyle.ellipsize(g, cleanTitle, titleFont, WIDTH - PAD * 2), PAD, 118, titleFont, accent);
+        CardStyle.goldText(g, CardStyle.ellipsize(g, cleanTitle, titleFont, WIDTH - PAD * 2), PAD, 118, titleFont, Palette.PARCHMENT);
         // Divisória dourada com losango no centro
         g.setPaint(new GradientPaint(PAD, 0, CardStyle.withAlpha(accent, 0), WIDTH / 2f, 0, accent, true));
         g.fillRect(PAD, 134, WIDTH - PAD * 2, 2);
@@ -64,7 +65,7 @@ public class LeaderboardRenderer {
 
         if (self != null) {
             // Separador "· · ·" e a linha de quem pediu
-            g.setColor(new Color(255, 255, 255, 90));
+            g.setColor(CardStyle.withAlpha(Palette.GOLD, 140));
             for (int d = 0; d < 3; d++) g.fill(new Ellipse2D.Float(WIDTH / 2f - 20 + d * 18, y + 10, 6, 6));
             y += 36;
             drawRow(g, self, selfAvatar.join(), y, accent, true);
@@ -85,7 +86,7 @@ public class LeaderboardRenderer {
         // Fundo da linha
         int x = PAD;
         int w = WIDTH - PAD * 2;
-        g.setColor(highlight ? CardStyle.withAlpha(new Color(0xB3141F), 150) : new Color(0, 0, 0, medal != null ? 90 : 60));
+        g.setColor(highlight ? CardStyle.withAlpha(Palette.RUBY, 190) : CardStyle.withAlpha(Palette.LEATHER, medal != null ? 170 : 120));
         g.fill(new RoundRectangle2D.Float(x, y, w, ROW, 22, 22));
         if (medal != null || highlight) {
             g.setStroke(new BasicStroke(2f));
@@ -104,7 +105,7 @@ public class LeaderboardRenderer {
         String pos = row.position() > 0 ? String.valueOf(row.position()) : "—";
         g.setFont(posFont);
         int pw = g.getFontMetrics().stringWidth(pos);
-        CardStyle.text(g, pos, cx - pw / 2, cy + 9, posFont, medal != null ? new Color(30, 22, 10) : Color.WHITE);
+        CardStyle.text(g, pos, cx - pw / 2, cy + 9, posFont, medal != null ? Palette.LEATHER : Palette.PARCHMENT);
 
         // Avatar
         int size = 56;
@@ -128,7 +129,7 @@ public class LeaderboardRenderer {
         String value = CardStyle.printable(row.value(), valueFont);
         int vw = g.getFontMetrics(valueFont).stringWidth(value);
         int right = x + w - 26;
-        CardStyle.text(g, value, right - vw, y + 46, valueFont, medal != null ? medal.brighter() : Color.WHITE);
+        CardStyle.text(g, value, right - vw, y + 46, valueFont, medal != null ? medal.brighter() : Palette.PARCHMENT);
 
         // Nome, detalhe e barra
         int tx = ax + size + 22;
@@ -136,7 +137,7 @@ public class LeaderboardRenderer {
         Font nameFont = CardStyle.font(Font.BOLD, 26);
         String name = CardStyle.printable(row.name(), nameFont);
         name = CardStyle.ellipsize(g, name, nameFont, textMax);
-        CardStyle.text(g, name, tx, y + 36, nameFont, Color.WHITE);
+        CardStyle.text(g, name, tx, y + 36, nameFont, medal != null || highlight ? Palette.PARCHMENT : Color.WHITE);
 
         int barW = 200;
         int barX = right - barW;
@@ -144,6 +145,6 @@ public class LeaderboardRenderer {
 
         Font detailFont = CardStyle.font(Font.PLAIN, 17);
         String detail = CardStyle.ellipsize(g, CardStyle.printable(row.detail(), detailFont), detailFont, barX - 24 - tx);
-        CardStyle.text(g, detail, tx, y + 64, detailFont, new Color(255, 255, 255, 165));
+        CardStyle.text(g, detail, tx, y + 64, detailFont, CardStyle.withAlpha(Palette.PARCHMENT, 165));
     }
 }
