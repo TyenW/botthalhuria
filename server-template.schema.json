@@ -156,6 +156,31 @@
             "null"
           ],
           "description": "Canal aberto pelo botão da DM (ex.: CHAN_VERIFY)."
+        },
+        "catchUpOnStartup": {
+          "type": "boolean",
+          "description": "Ao ligar, dá o cargo de entrada a quem está sem nenhum cargo e manda uma DM pedindo a verificação. Quem entrou com o bot desligado também ganha as boas-vindas no canal."
+        },
+        "catchUpMaxDays": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Na primeira vez (sem registro de quando o bot esteve online), entradas destes últimos dias contam como \"entrou com o bot desligado\"."
+        },
+        "catchUpMaxMembers": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Máximo de membros recuperados por inicialização (as DMs saem a cada 3 s)."
+        },
+        "catchUpDmTitle": {
+          "type": "string",
+          "description": "Título da DM de desculpas. Aceita {user}, {username}, {count} e os placeholders gerais."
+        },
+        "catchUpDmMessage": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Texto da DM de desculpas (vazio = sem DM). Aceita {user}, {username}, {count}, {server}, {channel:KEY} e {role:KEY}."
         }
       }
     },

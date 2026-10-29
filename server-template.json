@@ -30,7 +30,12 @@
     "dmWelcome": true,
     "dmTitle": "✦ Bem-vindo(a) a Thaluria, {username}!",
     "dmMessage": "Que bom ter você no reino! Aqui vai um guia rápido para não se perder:\n\n**1. Leia as leis** — são poucas e curtas, prometo. 📜\n**2. Atravesse os portões** — um clique no botão de verificação libera todo o servidor. 🗝️\n**3. Monte sua identidade** — escolha interesses e notificações no menu de cargos. 🎭\n\n**O que te espera do lado de dentro:**\n⚔️ Níveis e títulos que sobem conforme você conversa e joga\n🪙 Thalurians para gastar em cores de nome no `/loja`\n🔊 Salas de voz que você mesmo cria e controla\n🎉 Eventos, torneios e noites de jogo\n\nPrecisando de ajuda, é só abrir um ticket lá dentro. Nos vemos na taverna! 🍻",
-    "dmButtonChannelKey": "CHAN_VERIFY"
+    "dmButtonChannelKey": "CHAN_VERIFY",
+    "catchUpOnStartup": true,
+    "catchUpMaxDays": 14,
+    "catchUpMaxMembers": 100,
+    "catchUpDmTitle": "🙏 Perdão pela demora, {username}!",
+    "catchUpDmMessage": "Eu estava fora do ar quando você chegou a Thaluria e os portões ficaram sem guarda. 😅\n\nJá te dei o cargo de {role:ROLE_VISITOR}: agora é só **ler as leis** e **clicar no botão de verificação** para liberar o reino inteiro. 🗝️\n\nQualquer problema, abra um ticket lá dentro. Nos vemos na taverna! 🍻"
   },
 
   "welcomeCard": {
@@ -498,12 +503,12 @@
         { "target": "ROLE_MEMBER", "allow": ["VIEW_CHANNEL", "VOICE_CONNECT", "VOICE_SPEAK", "VOICE_STREAM", "VOICE_USE_VAD", "MESSAGE_SEND", "MESSAGE_HISTORY"], "deny": [] }
       ],
       "channels": [
-        { "key": "CHAN_VOICE_CREATE", "name": "➕・Criar Sala", "type": "VOICE", "joinToCreate": true, "tempChannelName": "🔊・Salão de {user}", "tempUserLimit": 0 },
-        { "key": "CHAN_VOICE_LOUNGE", "name": "☕・Lareira", "type": "VOICE" },
-        { "key": "CHAN_VOICE_GAMING_1", "name": "🎮・Arena 01", "type": "VOICE" },
-        { "key": "CHAN_VOICE_GAMING_2", "name": "🎮・Arena 02", "type": "VOICE" },
+        { "key": "CHAN_VOICE_CREATE", "name": "➕・Criar Sala", "type": "VOICE", "joinToCreate": true, "tempChannelName": "🔊・Salão de {user}", "tempUserLimit": 5 },
+        { "key": "CHAN_VOICE_LOUNGE", "name": "☕・Lareira", "type": "VOICE", "userLimit": 15 },
+        { "key": "CHAN_VOICE_GAMING_1", "name": "🎮・Arena 01", "type": "VOICE", "userLimit": 5 },
+        { "key": "CHAN_VOICE_GAMING_2", "name": "🎮・Arena 02", "type": "VOICE", "userLimit": 5 },
         { "key": "CHAN_VOICE_DUO", "name": "👥・Duo", "type": "VOICE", "userLimit": 2 },
-        { "key": "CHAN_VOICE_MUSIC", "name": "🎵・Bardo", "type": "VOICE" },
+        { "key": "CHAN_VOICE_MUSIC", "name": "🎵・Bardo", "type": "VOICE", "userLimit": 10 },
         { "key": "CHAN_VOICE_EVENTS", "name": "🎪・Palco dos Eventos", "type": "VOICE" }
       ]
     },
@@ -574,7 +579,7 @@
           }
         },
         { "key": "CHAN_MOD_CHAT", "name": "🛡️・guarda", "type": "TEXT", "topic": "Alinhamento da moderação, denúncias e advertências." },
-        { "key": "CHAN_STAFF_VOICE", "name": "🔒・Sala do Conselho", "type": "VOICE" }
+        { "key": "CHAN_STAFF_VOICE", "name": "🔒・Sala do Conselho", "type": "VOICE", "userLimit": 10 }
       ]
     },
 

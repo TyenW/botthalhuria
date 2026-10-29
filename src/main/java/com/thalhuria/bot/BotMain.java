@@ -7,6 +7,7 @@ import com.thalhuria.bot.database.ServerMapRepository;
 import com.thalhuria.bot.database.InfractionRepository;
 import com.thalhuria.bot.database.InviteRepository;
 import com.thalhuria.bot.database.MemberStatsRepository;
+import com.thalhuria.bot.database.PresenceRepository;
 import com.thalhuria.bot.listeners.*;
 import com.thalhuria.bot.service.*;
 import net.dv8tion.jda.api.JDA;
@@ -61,6 +62,7 @@ public class BotMain {
         // 3. Inicializar Camada de Serviços
         MemberStatsRepository statsRepository = new MemberStatsRepository(databaseManager);
         InfractionRepository infractionRepository = new InfractionRepository(databaseManager);
+        PresenceRepository presenceRepository = new PresenceRepository(databaseManager);
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2, r -> {
             Thread t = new Thread(r, "thalhuria-scheduler");
             t.setDaemon(true);
@@ -105,7 +107,7 @@ public class BotMain {
         // 5. Configurar Listeners de Eventos
         ButtonInteractionListener buttonListener = new ButtonInteractionListener(provisioningService, auditLogService);
         GuildAuditListener auditListener = new GuildAuditListener(auditLogService, templateService);
-        CommunityListener communityListener = new CommunityListener(templateService, onboardingService, tempVoiceService, activityService, eventService, inviteService);
+        CommunityListener communityListener = new CommunityListener(templateService, onboardingService, tempVoiceService, activityService, eventService, inviteService, presenceRepository);
         PanelInteractionListener panelListener = new PanelInteractionListener(onboardingService, ticketService, economyService);
         TempVoiceControlListener tempVoiceControlListener = new TempVoiceControlListener(tempVoiceService, templateService);
         ModLogListener modLogListener = new ModLogListener(modLogService, templateService);
@@ -148,6 +150,8 @@ public class BotMain {
                                     JDA ready = event.getJDA();
                                     scheduler.scheduleAtFixedRate(() -> activityService.voiceTick(ready), 1, 1, TimeUnit.MINUTES);
                                     scheduler.scheduleAtFixedRate(() -> statsCounterService.updateAll(ready), 1, 10, TimeUnit.MINUTES);
+                                    // Batimento: ao religar, quem entrou depois do último registro passa pela recuperação
+                                    scheduler.scheduleAtFixedRate(() -> touchPresence(ready, presenceRepository), 1, 1, TimeUnit.MINUTES);
                                 }
                             }
                     );
@@ -161,6 +165,7 @@ public class BotMain {
             // Hook de desligamento gracioso
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 LOGGER.info("Desligando Bot Thalhuria de forma graciosa...");
+                touchPresence(jda, presenceRepository);
                 scheduler.shutdownNow();
                 jda.shutdown();
             }));
@@ -169,5 +174,10 @@ public class BotMain {
             LOGGER.error("Falha ao iniciar conexão JDA com o Discord", e);
             System.exit(1);
         }
+    }
+
+    private static void touchPresence(JDA jda, PresenceRepository presenceRepository) {
+        long now = System.currentTimeMillis();
+        jda.getGuilds().forEach(g -> presenceRepository.touch(g.getId(), now));
     }
 }
