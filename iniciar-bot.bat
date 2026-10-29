@@ -24,5 +24,8 @@ if not exist run mkdir run
 copy /Y target\botthalhuria-1.0.0.jar run\bot.jar >nul
 
 echo [3/3] Iniciando o bot (logs tambem em logs\bot.log e logs\erros.log)...
-java --enable-native-access=ALL-UNNAMED -jar run\bot.jar
+REM Usa o JDK do JAVA_HOME (o mesmo do Maven); o "java" do PATH pode ser um Java 8 antigo.
+set "JAVA_EXE=java"
+if defined JAVA_HOME if exist "%JAVA_HOME%\bin\java.exe" set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
+"%JAVA_EXE%" --enable-native-access=ALL-UNNAMED -jar run\bot.jar
 pause
