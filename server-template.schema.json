@@ -597,6 +597,27 @@
         }
       }
     },
+    "commands": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Onde os comandos slash podem ser usados. ADMINISTRATOR e bypassRoleKeys usam em qualquer canal.",
+      "properties": {
+        "restrictToChannels": {
+          "type": "boolean",
+          "description": "false libera os comandos em todos os canais."
+        },
+        "allowedChannelKeys": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Canais (e seus tópicos) onde membros comuns podem usar comandos."
+        },
+        "bypassRoleKeys": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Cargos que podem usar comandos em qualquer canal."
+        }
+      }
+    },
     "messages": {
       "type": "object",
       "additionalProperties": {

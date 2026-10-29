@@ -38,6 +38,7 @@ public class ServerTemplate {
     private WelcomeCardConfig welcomeCard = new WelcomeCardConfig();
     private EventsConfig events = new EventsConfig();
     private InvitesConfig invites = new InvitesConfig();
+    private CommandsConfig commands = new CommandsConfig();
     private java.util.Map<String, String> messages = new java.util.HashMap<>();
 
     public ServerTemplate() {}
@@ -152,6 +153,14 @@ public class ServerTemplate {
 
     public void setInvites(InvitesConfig invites) {
         this.invites = invites != null ? invites : new InvitesConfig();
+    }
+
+    public CommandsConfig getCommands() {
+        return commands;
+    }
+
+    public void setCommands(CommandsConfig commands) {
+        this.commands = commands != null ? commands : new CommandsConfig();
     }
 
     public Stream<ChannelTemplate> allChannels() {
@@ -325,6 +334,8 @@ public class ServerTemplate {
             }
             if (invites.getCoinsPerInvite() < 0) problems.add("invites.coinsPerInvite não pode ser negativo");
         }
+        for (String key : commands.getAllowedChannelKeys()) checkRef(problems, "commands.allowedChannelKeys", key, channelKeys);
+        for (String key : commands.getBypassRoleKeys()) checkRef(problems, "commands.bypassRoleKeys", key, roleKeys);
         checkColor(problems, "welcomeCard.backgroundColorHex", welcomeCard.getBackgroundColorHex());
         checkColor(problems, "welcomeCard.accentColorHex", welcomeCard.getAccentColorHex());
 

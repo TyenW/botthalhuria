@@ -73,6 +73,61 @@ public class OnboardingService {
     }
 
     /**
+     * Ao ligar o bot: dá o cargo inicial a quem entrou enquanto ele estava desligado e manda uma DM
+     * pedindo desculpa pelo atraso. Membros que já são verificados ou têm o cargo inicial são ignorados.
+     *
+     * @return quantos membros humanos receberam o cargo
+     */
+    public int catchUpMissedJoins(Guild guild) {
+        OnboardingConfig config = templateService.get(guild).getOnboarding();
+        if (!config.isEnabled()) return 0;
+        Optional<Role> autoRole = templateService.role(guild, config.getAutoRoleKey());
+        Optional<Role> verified = templateService.role(guild, config.getVerifiedRoleKey());
+        Optional<Role> botRole = templateService.role(guild, config.getBotRoleKey());
+        if (autoRole.isEmpty()) return 0;
+        if (!guild.getSelfMember().canInteract(autoRole.get())) {
+            LOGGER.warn("O cargo {} está acima do cargo do bot — mova o cargo do bot para o topo da hierarquia.", autoRole.get().getName());
+            return 0;
+        }
+
+        int fixed = 0;
+        for (Member member : guild.getMembers()) {
+            if (member.isOwner()) continue;
+            if (member.getUser().isBot()) {
+                botRole.filter(r -> !member.getRoles().contains(r) && guild.getSelfMember().canInteract(r))
+                        .ifPresent(r -> guild.addRoleToMember(member, r).reason("Cargo de bot (bot estava desligado)").queue(null, err -> { }));
+                continue;
+            }
+            if (member.getRoles().contains(autoRole.get())) continue;
+            if (verified.isPresent() && member.getRoles().contains(verified.get())) continue;
+
+            fixed++;
+            guild.addRoleToMember(member, autoRole.get()).reason("Cargo automático atrasado (bot estava desligado)").queue(
+                    ok -> sendLateJoinDm(member, config, autoRole.get()),
+                    err -> LOGGER.warn("Falha ao aplicar cargo atrasado em {}: {}", member.getEffectiveName(), err.getMessage()));
+        }
+        if (fixed > 0) {
+            LOGGER.info("{}: {} membro(s) sem cargo inicial receberam o cargo atrasado", guild.getName(), fixed);
+            auditLogService.logEvent(guild, "⏰ Cargos atrasados",
+                    fixed + " membro(s) entraram enquanto o bot estava desligado e receberam " + autoRole.get().getAsMention() + ".",
+                    AuditLogService.COLOR_MEMBER);
+        }
+        return fixed;
+    }
+
+    private void sendLateJoinDm(Member member, OnboardingConfig config, Role role) {
+        Guild guild = member.getGuild();
+        String roleName = "**" + role.getName() + "**";
+        EmbedBuilder embed = templateService.brandedEmbed(guild)
+                .setAuthor(guild.getName(), null, templateService.logoUrl(guild))
+                .setTitle(templateService.msg(guild, "welcome.late.title", "username", member.getEffectiveName()))
+                .setDescription(templateService.msg(guild, "welcome.late.message", "user", member.getAsMention(),
+                        "username", member.getEffectiveName(), "count", guild.getMemberCount(), "role", roleName))
+                .setThumbnail(templateService.logoUrl(guild));
+        sendDmWithVerifyButton(member, config, embed);
+    }
+
+    /**
      * Mensagem privada de boas-vindas com o passo a passo e um botão de link para o canal de verificação.
      */
     private void sendWelcomeDm(Member member, OnboardingConfig config) {
@@ -85,6 +140,11 @@ public class OnboardingService {
                 .setDescription(templateService.render(guild, config.getDmMessage(), vars));
         embed.setThumbnail(templateService.logoUrl(guild));
 
+        sendDmWithVerifyButton(member, config, embed);
+    }
+
+    private void sendDmWithVerifyButton(Member member, OnboardingConfig config, EmbedBuilder embed) {
+        Guild guild = member.getGuild();
         var verify = templateService.channel(guild, config.getDmButtonChannelKey())
                 .or(() -> templateService.channel(guild, config.getWelcomeChannelKey()));
         member.getUser().openPrivateChannel()
@@ -96,7 +156,7 @@ public class OnboardingService {
                     }
                     return action;
                 })
-                .queue(null, err -> LOGGER.debug("DM de boas-vindas fechada para {}", member.getEffectiveName()));
+                .queue(null, err -> LOGGER.debug("DM fechada para {}", member.getEffectiveName()));
     }
 
     /**

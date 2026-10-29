@@ -165,6 +165,12 @@
     ]
   },
 
+  "commands": {
+    "restrictToChannels": true,
+    "allowedChannelKeys": ["CHAN_COMMANDS", "CHAN_ADMIN_PANEL", "CHAN_MOD_CHAT"],
+    "bypassRoleKeys": ["ROLE_OWNER", "ROLE_ADMIN"]
+  },
+
   "messages": {},
 
   "roles": [
@@ -503,6 +509,8 @@
         { "key": "CHAN_VOICE_GAMING_1", "name": "🎮・Arena 01", "type": "VOICE" },
         { "key": "CHAN_VOICE_GAMING_2", "name": "🎮・Arena 02", "type": "VOICE" },
         { "key": "CHAN_VOICE_DUO", "name": "👥・Duo", "type": "VOICE", "userLimit": 2 },
+        { "key": "CHAN_VOICE_TRIO", "name": "🔺・Trio", "type": "VOICE", "userLimit": 3 },
+        { "key": "CHAN_VOICE_SQUAD", "name": "🛡️・Squad", "type": "VOICE", "userLimit": 4 },
         { "key": "CHAN_VOICE_MUSIC", "name": "🎵・Bardo", "type": "VOICE" },
         { "key": "CHAN_VOICE_EVENTS", "name": "🎪・Palco dos Eventos", "type": "VOICE" }
       ]

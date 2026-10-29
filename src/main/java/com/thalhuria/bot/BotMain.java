@@ -83,10 +83,11 @@ public class BotMain {
         EventService eventService = new EventService(templateService, scheduler);
         StatsCounterService statsCounterService = new StatsCounterService(templateService);
         BackupService backupService = new BackupService(repository, templateService, config.getBackupsDir());
+        StartupCheckService startupCheckService = new StartupCheckService(templateService, onboardingService);
         provisioningService.setCommunityServices(moderationService, statsCounterService);
 
         // 4. Configurar Gerenciador de Comandos Slash
-        CommandManager commandManager = new CommandManager();
+        CommandManager commandManager = new CommandManager(templateService);
         RebuildServerCommand rebuildCommand = new RebuildServerCommand(provisioningService, auditLogService, templateService);
         commandManager.registerCommand(new SetupServerCommand(rebuildCommand));
         commandManager.registerCommand(rebuildCommand);
@@ -148,6 +149,8 @@ public class BotMain {
                                     JDA ready = event.getJDA();
                                     scheduler.scheduleAtFixedRate(() -> activityService.voiceTick(ready), 1, 1, TimeUnit.MINUTES);
                                     scheduler.scheduleAtFixedRate(() -> statsCounterService.updateAll(ready), 1, 10, TimeUnit.MINUTES);
+                                    // Corrige limites de voz e cargos de quem entrou com o bot desligado
+                                    scheduler.execute(() -> startupCheckService.runAll(ready));
                                 }
                             }
                     );
