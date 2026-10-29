@@ -12,7 +12,8 @@ import java.util.List;
 
 /**
  * Gerencia a conexão e o esquema do banco de dados SQLite.
- * Tabelas: server_mappings (key do template -> ID do Discord), member_stats (XP e economia) e infractions (moderação).
+ * Tabelas: server_mappings (key do template -> ID do Discord), member_stats (XP e economia), infractions (moderação),
+ * invite_joins (convites) e bot_presence (última vez que o bot esteve online em cada servidor).
  *
  * O banco roda em modo WAL com busy_timeout: leituras não bloqueiam escritas e escritas concorrentes
  * (XP de várias mensagens ao mesmo tempo) esperam em vez de falhar com SQLITE_BUSY.
@@ -100,7 +101,12 @@ public class DatabaseManager {
                     rewarded INTEGER NOT NULL DEFAULT 0,
                     PRIMARY KEY (guild_id, user_id)
                 )""",
-                "CREATE INDEX IF NOT EXISTS idx_invite_joins_inviter ON invite_joins(guild_id, inviter_id)"
+                "CREATE INDEX IF NOT EXISTS idx_invite_joins_inviter ON invite_joins(guild_id, inviter_id)",
+                """
+                CREATE TABLE IF NOT EXISTS bot_presence (
+                    guild_id TEXT PRIMARY KEY,
+                    last_seen INTEGER NOT NULL
+                )"""
         );
 
         try (Connection conn = getConnection();

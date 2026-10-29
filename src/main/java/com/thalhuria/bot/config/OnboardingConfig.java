@@ -24,6 +24,12 @@ public class OnboardingConfig {
     private String dmTitle = "Bem-vindo(a) a {server}!";
     private String dmMessage;
     private String dmButtonChannelKey;
+    // Recuperação ao ligar: quem entrou com o bot desligado ou está sem cargo de entrada
+    private boolean catchUpOnStartup = true;
+    private int catchUpMaxDays = 14;
+    private int catchUpMaxMembers = 100;
+    private String catchUpDmTitle = "Desculpe a demora, {username}!";
+    private String catchUpDmMessage = "Eu estava fora do ar quando você chegou em **{server}** e acabei não te recebendo direito. Já te dei o cargo de entrada: falta só clicar no botão de verificação para liberar o servidor.";
 
     public OnboardingConfig() {}
 
@@ -161,5 +167,45 @@ public class OnboardingConfig {
 
     public void setDmButtonChannelKey(String dmButtonChannelKey) {
         this.dmButtonChannelKey = dmButtonChannelKey;
+    }
+
+    public boolean isCatchUpOnStartup() {
+        return catchUpOnStartup;
+    }
+
+    public void setCatchUpOnStartup(boolean catchUpOnStartup) {
+        this.catchUpOnStartup = catchUpOnStartup;
+    }
+
+    public int getCatchUpMaxDays() {
+        return catchUpMaxDays;
+    }
+
+    public void setCatchUpMaxDays(int catchUpMaxDays) {
+        this.catchUpMaxDays = catchUpMaxDays;
+    }
+
+    public int getCatchUpMaxMembers() {
+        return catchUpMaxMembers;
+    }
+
+    public void setCatchUpMaxMembers(int catchUpMaxMembers) {
+        this.catchUpMaxMembers = catchUpMaxMembers;
+    }
+
+    public String getCatchUpDmTitle() {
+        return catchUpDmTitle;
+    }
+
+    public void setCatchUpDmTitle(String catchUpDmTitle) {
+        this.catchUpDmTitle = catchUpDmTitle;
+    }
+
+    public String getCatchUpDmMessage() {
+        return catchUpDmMessage;
+    }
+
+    public void setCatchUpDmMessage(String catchUpDmMessage) {
+        this.catchUpDmMessage = catchUpDmMessage;
     }
 }
