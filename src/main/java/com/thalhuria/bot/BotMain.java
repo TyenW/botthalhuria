@@ -86,6 +86,7 @@ public class BotMain {
         StatsCounterService statsCounterService = new StatsCounterService(templateService);
         BackupService backupService = new BackupService(repository, templateService, config.getBackupsDir());
         provisioningService.setCommunityServices(moderationService, statsCounterService);
+        provisioningService.setOnboardingService(onboardingService);
 
         // 4. Configurar Gerenciador de Comandos Slash
         CommandManager commandManager = new CommandManager();

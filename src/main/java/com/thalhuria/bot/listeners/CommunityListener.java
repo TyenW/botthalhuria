@@ -61,7 +61,7 @@ public class CommunityListener extends ListenerAdapter {
         inviteService.load(event.getGuild());
         // Lê a última presença antes de renová-la: quem entrou depois disso entrou com o bot desligado
         String guildId = event.getGuild().getId();
-        onboardingService.catchUp(event.getGuild(), presenceRepository.lastSeen(guildId));
+        onboardingService.catchUpOnStartup(event.getGuild(), presenceRepository.lastSeen(guildId));
         presenceRepository.touch(guildId, System.currentTimeMillis());
     }
 

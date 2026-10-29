@@ -288,7 +288,7 @@ Escolhe interesses em 🎭・cargos
 | `dmWelcome` | Envia também uma **mensagem privada** de boas-vindas (ignorado se o membro bloqueia DMs). |
 | `dmTitle` / `dmMessage` | Título e texto da DM. Aceitam `{user}`, `{username}`, `{count}` e os placeholders gerais. |
 | `dmButtonChannelKey` | Canal aberto pelo botão da DM (ex.: `CHAN_VERIFY`). |
-| `catchUpOnStartup` | Ao ligar, dá o `autoRoleKey` a quem está **sem nenhum cargo** e envia a DM de desculpas. Quem entrou depois da última vez que o bot esteve online ganha também as boas-vindas no canal. Padrão `true`. |
+| `catchUpOnStartup` | Ao ligar e ao fim de cada setup/sync/rebuild, dá o `autoRoleKey` a quem está **sem nenhum cargo** e envia a DM de desculpas. Quem entrou depois da última vez que o bot esteve online, ou nos últimos `catchUpMaxDays` dias sem o bot ter visto a entrada, ganha também as boas-vindas no canal. Padrão `true`. |
 | `catchUpMaxDays` | Só na primeira vez (o bot ainda não registrou presença): entradas destes últimos dias contam como "entrou com o bot desligado". Padrão `14`. |
 | `catchUpMaxMembers` | Máximo de membros recuperados por inicialização; as DMs saem a cada 3 s. Padrão `100`. |
 | `catchUpDmTitle` / `catchUpDmMessage` | Título e texto da DM de desculpas (leva o botão do `dmButtonChannelKey`). Mensagem vazia = sem DM. |
