@@ -127,6 +127,7 @@ Toda mensagem em 💡・sugestões ganha ✅/❌ para votação e um tópico de 
 | Quando | O bot... |
 | :--- | :--- |
 | Alguém entra | Dá 🌱 Viajante, descobre **por qual convite** entrou, posta o **cartão de boas-vindas** marcando a pessoa e envia uma **DM com guia**. Bots recebem ⚙️ Autômato. |
+| O bot liga | Quem entrou com ele desligado ou está **sem nenhum cargo** recebe 🌱 Viajante e uma **DM de desculpas** pedindo a verificação; quem entrou enquanto ele estava fora ganha também as **boas-vindas** no canal. |
 | Alguém se verifica | Dá ✨ Cidadão e paga a recompensa de convite. |
 | Alguém conversa ou fica em call | Soma XP e Thalers; ao subir de nível, anuncia em 🏆・conquistas e entrega títulos (🗡️ 5 · ⚔️ 15 · 🏰 30 · 🐉 50). |
 | Alguém quebra uma regra do AutoMod | O próprio Discord bloqueia (palavras/golpes, convites, menções em massa, spam) e alerta a staff. |
