@@ -9,26 +9,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Conferências feitas toda vez que o bot liga, para corrigir o que aconteceu enquanto ele estava desligado:
- * limites de pessoas dos canais de voz e cargo inicial de quem entrou nesse meio tempo.
+ * Conferências feitas toda vez que o bot liga, para corrigir o que mudou enquanto ele estava desligado:
+ * limites de pessoas dos canais de voz. A recuperação de cargos fica no {@link OnboardingService#catchUpOnStartup}.
  */
 public class StartupCheckService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StartupCheckService.class);
 
     private final TemplateService templateService;
-    private final OnboardingService onboardingService;
 
-    public StartupCheckService(TemplateService templateService, OnboardingService onboardingService) {
+    public StartupCheckService(TemplateService templateService) {
         this.templateService = templateService;
-        this.onboardingService = onboardingService;
     }
 
     public void runAll(JDA jda) {
         for (Guild guild : jda.getGuilds()) {
             try {
                 enforceVoiceLimits(guild);
-                onboardingService.catchUpMissedJoins(guild);
             } catch (Exception e) {
                 LOGGER.warn("Falha nas conferências de inicialização em {}: {}", guild.getName(), e.getMessage());
             }

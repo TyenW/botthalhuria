@@ -1,5 +1,6 @@
 package com.thalhuria.bot.listeners;
 
+import com.thalhuria.bot.database.PresenceRepository;
 import com.thalhuria.bot.config.ChannelTemplate;
 import com.thalhuria.bot.service.ActivityService;
 import com.thalhuria.bot.service.EventService;
@@ -39,15 +40,18 @@ public class CommunityListener extends ListenerAdapter {
     private final ActivityService activityService;
     private final EventService eventService;
     private final InviteService inviteService;
+    private final PresenceRepository presenceRepository;
 
     public CommunityListener(TemplateService templateService, OnboardingService onboardingService, TempVoiceService tempVoiceService,
-                             ActivityService activityService, EventService eventService, InviteService inviteService) {
+                             ActivityService activityService, EventService eventService, InviteService inviteService,
+                             PresenceRepository presenceRepository) {
         this.templateService = templateService;
         this.onboardingService = onboardingService;
         this.tempVoiceService = tempVoiceService;
         this.activityService = activityService;
         this.eventService = eventService;
         this.inviteService = inviteService;
+        this.presenceRepository = presenceRepository;
     }
 
     @Override
@@ -55,6 +59,10 @@ public class CommunityListener extends ListenerAdapter {
         tempVoiceService.cleanup(event.getGuild());
         eventService.restore(event.getGuild());
         inviteService.load(event.getGuild());
+        // Lê a última presença antes de renová-la: quem entrou depois disso entrou com o bot desligado
+        String guildId = event.getGuild().getId();
+        onboardingService.catchUpOnStartup(event.getGuild(), presenceRepository.lastSeen(guildId));
+        presenceRepository.touch(guildId, System.currentTimeMillis());
     }
 
     @Override

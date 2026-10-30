@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.4.0 — "Portões Vigiados" (2026-10-29)
+
+- **Recuperação de entrada ao ligar**: o bot grava a cada minuto quando esteve online (`bot_presence`). Ao religar, quem está **sem nenhum cargo** recebe 🌱 Viajante e uma **DM se desculpando** com o botão dos portões; quem **entrou com o bot desligado** ganha também as boas-vindas no canal. Bots sem ⚙️ Autômato recebem o cargo. Membros com qualquer cargo (staff, antigos) ficam de fora. As DMs saem a cada 3 s, no máximo 100 por inicialização, e um resumo vai para o log de auditoria. A recuperação roda também ao fim de cada `/setup-server`, `/sync-server` e `/rebuild-server` (numa instalação nova os cargos só existem depois do sync), e conta como "entrou com o bot desligado" quem entrou nos últimos 14 dias sem o bot ter registrado a entrada. O log diz por que ela não rodou, quando não roda. Configurável em `onboarding.catchUp*`.
+- **Limites nas calls**: ☕ Lareira 15 · 🎮 Arenas 5 · 👥 Duo 2 · 🎵 Bardo 10 · 🔒 Conselho 10; salas criadas em ➕ Criar Sala começam com limite 5 (o dono muda pelo painel). 🎪 Palco dos Eventos segue sem limite. Rode `/sync-server` para aplicar.
+
 ## 4.3.0 — "Carmesim e Ouro" (2026-10-27)
 
 - **Identidade visual da logo**: paleta central em `Palette.java` — Carmesim `#4A0E0E`, Couro `#1E0707`, Ouro Thaluria `#D4AF6A`, Pergaminho `#EED49F` e Rubi `#8B1E1E`. Cor padrão dos embeds passa a ser o Ouro.

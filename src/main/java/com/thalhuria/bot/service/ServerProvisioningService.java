@@ -38,6 +38,7 @@ public class ServerProvisioningService {
     private final PanelService panelService;
     private ModerationService moderationService;
     private StatsCounterService statsCounterService;
+    private OnboardingService onboardingService;
 
     public record ProvisioningReport(
             int rolesCreated,
@@ -70,6 +71,20 @@ public class ServerProvisioningService {
         this.statsCounterService = statsCounterService;
     }
 
+    /** Depois de cada setup/sync/rebuild, recupera quem ficou sem cargo (os cargos podem ter acabado de nascer). */
+    public void setOnboardingService(OnboardingService onboardingService) {
+        this.onboardingService = onboardingService;
+    }
+
+    private void catchUpMembers(Guild guild) {
+        if (onboardingService == null) return;
+        try {
+            onboardingService.catchUpAfterProvisioning(guild);
+        } catch (Exception e) {
+            LOGGER.warn("Falha na recuperação de entrada após o provisionamento: {}", e.getMessage(), e);
+        }
+    }
+
     /**
      * Provisiona ou sincroniza a estrutura do servidor com base no template fornecido.
      * Operação idempotente: nunca duplica cargos ou canais existentes; apenas atualiza o que for necessário.
@@ -82,6 +97,8 @@ public class ServerProvisioningService {
             } finally {
                 auditLogService.release(guild);
             }
+        }).whenComplete((report, err) -> {
+            if (err == null) catchUpMembers(guild);
         });
     }
 
@@ -677,6 +694,8 @@ public class ServerProvisioningService {
             } finally {
                 auditLogService.release(guild);
             }
+        }).whenComplete((report, err) -> {
+            if (err == null) catchUpMembers(guild);
         });
     }
 

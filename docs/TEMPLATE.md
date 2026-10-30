@@ -288,10 +288,14 @@ Escolhe interesses em 🎭・cargos
 | `dmWelcome` | Envia também uma **mensagem privada** de boas-vindas (ignorado se o membro bloqueia DMs). |
 | `dmTitle` / `dmMessage` | Título e texto da DM. Aceitam `{user}`, `{username}`, `{count}` e os placeholders gerais. |
 | `dmButtonChannelKey` | Canal aberto pelo botão da DM (ex.: `CHAN_VERIFY`). |
+| `catchUpOnStartup` | Ao ligar e ao fim de cada setup/sync/rebuild, dá o `autoRoleKey` a quem está **sem nenhum cargo** e envia a DM de desculpas. Quem entrou depois da última vez que o bot esteve online, ou nos últimos `catchUpMaxDays` dias sem o bot ter visto a entrada, ganha também as boas-vindas no canal. Padrão `true`. |
+| `catchUpMaxDays` | Só na primeira vez (o bot ainda não registrou presença): entradas destes últimos dias contam como "entrou com o bot desligado". Padrão `14`. |
+| `catchUpMaxMembers` | Máximo de membros recuperados por inicialização; as DMs saem a cada 3 s. Padrão `100`. |
+| `catchUpDmTitle` / `catchUpDmMessage` | Título e texto da DM de desculpas (leva o botão do `dmButtonChannelKey`). Mensagem vazia = sem DM. |
 | `rulesChannelKey` | Servidores com Comunidade: o **canal de regras oficial** do Discord assume este canal do template (é renomeado, movido, recebe permissões e painel). Nada é duplicado. |
 | `communityUpdatesChannelKey` | Servidores com Comunidade: o canal de **atualizações da Comunidade** assume este canal do template (use um canal da staff). |
 
-> Membros que **já estavam** no servidor antes do setup não recebem o cargo automático; eles só precisam clicar no botão de verificação.
+> Membros que **já estavam** no servidor antes do setup e não têm nenhum cargo recebem o cargo automático e a DM de desculpas na próxima vez que o bot ligar (`catchUpOnStartup`). Quem já tem qualquer cargo não é tocado.
 
 ---
 

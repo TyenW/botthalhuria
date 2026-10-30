@@ -14,24 +14,35 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Jornada do novo membro: cargo automático na entrada, mensagem de boas-vindas,
- * verificação por botão e autoatribuição de cargos pelo menu.
+ * verificação por botão, autoatribuição de cargos pelo menu e recuperação de quem entrou com o bot desligado.
  */
 public class OnboardingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OnboardingService.class);
+    /** Intervalo entre membros na recuperação: DMs em rajada caem no antispam do Discord. */
+    private static final Duration CATCH_UP_SPACING = Duration.ofSeconds(3);
 
     private final TemplateService templateService;
     private final AuditLogService auditLogService;
     private final WelcomeCardRenderer cardRenderer;
     private final InviteService inviteService;
+    /** Última presença lida ao ligar, por servidor: o sync seguinte ainda precisa saber desde quando o bot esteve fora. */
+    private final Map<String, Optional<Long>> lastSeenAtStartup = new ConcurrentHashMap<>();
 
     public record RoleChange(List<Role> added, List<Role> removed) {}
 
@@ -73,71 +84,24 @@ public class OnboardingService {
     }
 
     /**
-     * Ao ligar o bot: dá o cargo inicial a quem entrou enquanto ele estava desligado e manda uma DM
-     * pedindo desculpa pelo atraso. Membros que já são verificados ou têm o cargo inicial são ignorados.
-     *
-     * @return quantos membros humanos receberam o cargo
-     */
-    public int catchUpMissedJoins(Guild guild) {
-        OnboardingConfig config = templateService.get(guild).getOnboarding();
-        if (!config.isEnabled()) return 0;
-        Optional<Role> autoRole = templateService.role(guild, config.getAutoRoleKey());
-        Optional<Role> verified = templateService.role(guild, config.getVerifiedRoleKey());
-        Optional<Role> botRole = templateService.role(guild, config.getBotRoleKey());
-        if (autoRole.isEmpty()) return 0;
-        if (!guild.getSelfMember().canInteract(autoRole.get())) {
-            LOGGER.warn("O cargo {} está acima do cargo do bot — mova o cargo do bot para o topo da hierarquia.", autoRole.get().getName());
-            return 0;
-        }
-
-        int fixed = 0;
-        for (Member member : guild.getMembers()) {
-            if (member.isOwner()) continue;
-            if (member.getUser().isBot()) {
-                botRole.filter(r -> !member.getRoles().contains(r) && guild.getSelfMember().canInteract(r))
-                        .ifPresent(r -> guild.addRoleToMember(member, r).reason("Cargo de bot (bot estava desligado)").queue(null, err -> { }));
-                continue;
-            }
-            if (member.getRoles().contains(autoRole.get())) continue;
-            if (verified.isPresent() && member.getRoles().contains(verified.get())) continue;
-
-            fixed++;
-            guild.addRoleToMember(member, autoRole.get()).reason("Cargo automático atrasado (bot estava desligado)").queue(
-                    ok -> sendLateJoinDm(member, config, autoRole.get()),
-                    err -> LOGGER.warn("Falha ao aplicar cargo atrasado em {}: {}", member.getEffectiveName(), err.getMessage()));
-        }
-        if (fixed > 0) {
-            LOGGER.info("{}: {} membro(s) sem cargo inicial receberam o cargo atrasado", guild.getName(), fixed);
-            auditLogService.logEvent(guild, "⏰ Cargos atrasados",
-                    fixed + " membro(s) entraram enquanto o bot estava desligado e receberam " + autoRole.get().getAsMention() + ".",
-                    AuditLogService.COLOR_MEMBER);
-        }
-        return fixed;
-    }
-
-    private void sendLateJoinDm(Member member, OnboardingConfig config, Role role) {
-        Guild guild = member.getGuild();
-        String roleName = "**" + role.getName() + "**";
-        EmbedBuilder embed = templateService.brandedEmbed(guild)
-                .setAuthor(guild.getName(), null, templateService.logoUrl(guild))
-                .setTitle(templateService.msg(guild, "welcome.late.title", "username", member.getEffectiveName()))
-                .setDescription(templateService.msg(guild, "welcome.late.message", "user", member.getAsMention(),
-                        "username", member.getEffectiveName(), "count", guild.getMemberCount(), "role", roleName))
-                .setThumbnail(templateService.logoUrl(guild));
-        sendDmWithVerifyButton(member, config, embed);
-    }
-
-    /**
      * Mensagem privada de boas-vindas com o passo a passo e um botão de link para o canal de verificação.
      */
     private void sendWelcomeDm(Member member, OnboardingConfig config) {
-        if (!config.isDmWelcome() || config.getDmMessage() == null || config.getDmMessage().isBlank()) return;
+        if (!config.isDmWelcome()) return;
+        sendDm(member, config, config.getDmTitle(), config.getDmMessage());
+    }
+
+    /**
+     * DM com a marca do servidor e o botão de link para os portões. Ignorada se o texto está vazio.
+     */
+    private void sendDm(Member member, OnboardingConfig config, String title, String message) {
+        if (message == null || message.isBlank()) return;
         Guild guild = member.getGuild();
         Map<String, String> vars = userVars(member);
         EmbedBuilder embed = templateService.brandedEmbed(guild)
                 .setAuthor(guild.getName(), null, templateService.logoUrl(guild))
-                .setTitle(templateService.render(guild, config.getDmTitle(), vars))
-                .setDescription(templateService.render(guild, config.getDmMessage(), vars));
+                .setTitle(templateService.render(guild, title, vars))
+                .setDescription(templateService.render(guild, message, vars));
         embed.setThumbnail(templateService.logoUrl(guild));
 
         sendDmWithVerifyButton(member, config, embed);
@@ -157,6 +121,92 @@ public class OnboardingService {
                     return action;
                 })
                 .queue(null, err -> LOGGER.debug("DM fechada para {}", member.getEffectiveName()));
+    }
+
+    /**
+     * Recuperação de entrada (ao ligar e após cada setup/sync). Membros humanos sem nenhum cargo (nem o de entrada, nem o verificado)
+     * recebem o cargo automático e uma DM se desculpando, com o botão dos portões. Quem entrou depois de
+     * {@code lastSeen} entrou com o bot desligado e ganha também as boas-vindas no canal.
+     * Quem já tem qualquer cargo fica de fora, para não rebaixar staff ou membros antigos.
+     *
+     * @param lastSeen última vez que o bot esteve online (epoch ms); vazio na primeira vez, e então
+     *                 contam como "entrou com o bot desligado" as entradas dos últimos catchUpMaxDays dias
+     */
+    public void catchUpOnStartup(Guild guild, Optional<Long> lastSeen) {
+        lastSeenAtStartup.put(guild.getId(), lastSeen);
+        catchUp(guild, lastSeen);
+    }
+
+    /** Depois de setup/sync/rebuild: os cargos podem não existir quando o bot ligou. */
+    public void catchUpAfterProvisioning(Guild guild) {
+        catchUp(guild, lastSeenAtStartup.getOrDefault(guild.getId(), Optional.empty()));
+    }
+
+    private void catchUp(Guild guild, Optional<Long> lastSeen) {
+        OnboardingConfig config = templateService.get(guild).getOnboarding();
+        if (!config.isEnabled() || !config.isCatchUpOnStartup()) {
+            LOGGER.info("Recuperação de entrada em {} desligada no template.", guild.getName());
+            return;
+        }
+        Optional<Role> autoRole = templateService.role(guild, config.getAutoRoleKey());
+        if (autoRole.isEmpty() || templateService.role(guild, config.getVerifiedRoleKey()).isEmpty()) {
+            LOGGER.info("Recuperação de entrada em {} adiada: cargos {} / {} ainda não mapeados. Ela roda de novo após o /sync-server.",
+                    guild.getName(), config.getAutoRoleKey(), config.getVerifiedRoleKey());
+            return;
+        }
+        if (!guild.getSelfMember().canInteract(autoRole.get())) {
+            LOGGER.warn("Recuperação de entrada em {} ignorada: o cargo {} está acima do cargo do bot.", guild.getName(), autoRole.get().getName());
+            return;
+        }
+
+        templateService.role(guild, config.getBotRoleKey())
+                .filter(guild.getSelfMember()::canInteract)
+                .ifPresent(botRole -> guild.getMembers().stream()
+                        .filter(m -> m.getUser().isBot() && !m.getRoles().contains(botRole))
+                        .forEach(m -> guild.addRoleToMember(m, botRole).reason("Recuperação: bot sem cargo").queue(null,
+                                err -> LOGGER.warn("Falha ao dar cargo de bot a {}: {}", m.getEffectiveName(), err.getMessage()))));
+
+        OffsetDateTime offlineSince = lastSeen
+                .map(ms -> Instant.ofEpochMilli(ms).atOffset(ZoneOffset.UTC))
+                .orElse(OffsetDateTime.now(ZoneOffset.UTC).minusDays(config.getCatchUpMaxDays()));
+        List<Member> pending = guild.getMembers().stream()
+                .filter(m -> !m.getUser().isBot() && !m.isOwner() && !m.isPending() && m.getRoles().isEmpty())
+                .sorted(Comparator.comparing(Member::getTimeJoined))
+                .limit(Math.max(0, config.getCatchUpMaxMembers()))
+                .toList();
+        long screening = guild.getMembers().stream().filter(m -> !m.getUser().isBot() && m.isPending()).count();
+        if (screening > 0) {
+            // O Discord não deixa dar cargo antes de aceitar as regras; o cargo vem no handleJoin/verificação
+            LOGGER.info("Recuperação de entrada em {}: {} membro(s) ainda não aceitaram as regras de entrada do Discord e ficam de fora.", guild.getName(), screening);
+        }
+        if (pending.isEmpty()) {
+            LOGGER.info("Recuperação de entrada em {}: ninguém sem cargo.", guild.getName());
+            return;
+        }
+
+        // Entrou com o bot desligado: depois da última presença, ou recente e sem registro de entrada (o bot não viu)
+        OffsetDateTime window = OffsetDateTime.now(ZoneOffset.UTC).minusDays(config.getCatchUpMaxDays());
+        java.util.function.Predicate<Member> joinedWhileOffline = m -> m.getTimeJoined().isAfter(offlineSince)
+                || (m.getTimeJoined().isAfter(window) && inviteService != null
+                    && inviteService.repository().get(guild.getId(), m.getId()).isEmpty());
+        long missed = pending.stream().filter(joinedWhileOffline).count();
+        LOGGER.info("Recuperação de entrada em {}: {} membro(s) sem cargo, {} entraram com o bot desligado.", guild.getName(), pending.size(), missed);
+        auditLogService.logEvent(guild, "🔄 Recuperação de entrada",
+                pending.size() + " membro(s) sem cargo receberam " + autoRole.get().getAsMention() + " e um pedido de verificação por DM; "
+                        + missed + " entraram com o bot desligado e ganharam boas-vindas.", AuditLogService.COLOR_MEMBER);
+
+        for (int i = 0; i < pending.size(); i++) {
+            Member member = pending.get(i);
+            boolean missedJoin = joinedWhileOffline.test(member);
+            CompletableFuture.delayedExecutor(CATCH_UP_SPACING.toMillis() * i, TimeUnit.MILLISECONDS).execute(() -> {
+                guild.addRoleToMember(member, autoRole.get()).reason("Recuperação: entrou sem receber o cargo de entrada").queue(
+                        ok -> {
+                            if (missedJoin) sendWelcome(member, config, config.isPingOnWelcome(), null);
+                            sendDm(member, config, config.getCatchUpDmTitle(), config.getCatchUpDmMessage());
+                        },
+                        err -> LOGGER.warn("Falha na recuperação de {}: {}", member.getEffectiveName(), err.getMessage()));
+            });
+        }
     }
 
     /**
